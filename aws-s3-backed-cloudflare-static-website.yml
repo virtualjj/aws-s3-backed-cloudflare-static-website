@@ -75,7 +75,7 @@ Parameters:
     
   PreExistingCodeCommitUser:
     Type: String
-    Description: "OPTIONAL - Name of a user that only has SSH access for this website CodeCommit repo. Leave empty to have an IAM user created and managed by this stack. The user created with this stack will not have Programmatic access or AWS Management Console access. Note that SSH keys have to be generated separately and the generated public key will need to be uploaded by the administrator."
+    Description: "OPTIONAL - Name of a user that will only have SSH access for this website's CodeCommit repo. Leave empty to have an IAM user created and managed by this stack. The user created with this stack will not have Programmatic access or AWS Management Console access. Note that SSH keys have to be generated separately and the generated public key will need to be uploaded by the administrator. Also note that you need to manually remove the SSH key before deleting this stack otherwise stack deletion will fail."
   
   # Keep an S3 bucket instead of deleting.
   # "If you want to continue to use the same bucket name, don't delete the bucket."
@@ -106,11 +106,11 @@ Resources:
   # Bucket for CloudFront and S3 access logs: logs.example.com
   LogsBucket:
     Condition: NeedsNewLogsBucket
+    DeletionPolicy: Retain
     Type: "AWS::S3::Bucket"
     Properties:
       BucketName: !Sub "logs.${DomainName}"
       AccessControl: LogDeliveryWrite
-    DeletionPolicy: Retain
 
   # Bucket for site content: example.com
   SiteBucket:
@@ -152,6 +152,7 @@ Resources:
   # Git repository: example.com
   GitRepository:
     Condition: NeedsNewGitRepository
+    DeletionPolicy: Retain
     Type: "AWS::CodeCommit::Repository"
     Properties:
       RepositoryDescription: !Sub "Git repository for ${DomainName}"
@@ -161,8 +162,7 @@ Resources:
           DestinationArn: !Ref NotificationTopic
           Events:
             - all
-    DeletionPolicy: Retain
-    
+
   # SNS topic for Git repository activity. Email subscription
   NotificationTopic:
     Type: "AWS::SNS::Topic"
