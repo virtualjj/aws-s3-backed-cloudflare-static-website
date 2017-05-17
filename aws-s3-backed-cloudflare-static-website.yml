@@ -20,6 +20,7 @@ Metadata:
       Parameters:
       - PreExistingGitRepository
       - NotificationEmail
+      - PreExistingCodeCommitUser
     - Label:
         default: WEBSITE BUCKETS
       Parameters:
@@ -36,6 +37,8 @@ Metadata:
         default: Repo Name
       NotificationEmail:
         default: Notifications Email
+      PreExistingCodeCommitUser:
+        default: CodeCommit User
       PreExistingSiteBucket:
         default: Website Bucket Name
       PreExistingRedirectBucket:
@@ -69,6 +72,10 @@ Parameters:
     MinLength: 6
     AllowedPattern: ".+@[a-z0-9]+[-.a-z0-9]*(\\.[a-z][a-z]+)+"
     ConstraintDescription: "Provide a valid email address"
+    
+  PreExistingCodeCommitUser:
+    Type: String
+    Description: "OPTIONAL - Name of a user that only has SSH access for this website CodeCommit repo. Leave empty to have an IAM user created and managed by this stack. The user created with this stack will not have Programmatic access or AWS Management Console access. Note that SSH keys have to be generated separately and the generated public key will need to be uploaded by the administrator."
   
   # Keep an S3 bucket instead of deleting.
   # "If you want to continue to use the same bucket name, don't delete the bucket."
@@ -93,6 +100,7 @@ Conditions:
   NeedsNewSiteBucket: !Equals [!Ref PreExistingSiteBucket, ""]
   NeedsNewRedirectBucket: !Equals [!Ref PreExistingRedirectBucket, ""]
   NeedsNewLogsBucket: !Equals [!Ref PreExistingLogsBucket, ""]
+  NeedsNewCodeCommitUser: !Equals [!Ref PreExistingCodeCommitUser, ""]
 
 Resources:
   # Bucket for CloudFront and S3 access logs: logs.example.com
@@ -166,6 +174,27 @@ Resources:
   
   # Don't be a sheep and use IAM Policy AdministratorAccess account for everything!
   # Put users into this group that will only manage this CodeCommit repository.
+  
+  CodeCommitUser:
+    # Help for IAM User:
+    # http://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-properties-iam-user.html
+    Condition: NeedsNewCodeCommitUser
+    Type: "AWS::IAM::User"
+    Properties: 
+      Groups:
+      - Ref: WebSiteMgmtGroup
+    # AWS documentation state that to use SSH for connecting to AWS CodeCommit you need to add the following
+    # policies. However, since we will be making commits locally and not logging into the AWS console
+    # use a user account that ONLY has access to perform those actions. Don't use an account that has
+    # the ability to modify its own SSH keys.
+    # Reference: http://docs.aws.amazon.com/codecommit/latest/userguide/setting-up-ssh-unixes.html?icmpid=docs_acc_console_connect
+    #ManagedPolicyArns:
+    #  - arn:aws:iam::aws:policy/IAMReadOnlyAccess
+    #  - arn:aws:iam::aws:policy/IAMUserSSHKeys
+    #Policies:
+    #  - Policies
+      UserName: !Join ['', [!Ref DomainName, -CodeCommit-, !Ref 'AWS::Region' ]]
+  
   WebSiteMgmtGroup:
     Type: "AWS::IAM::Group"
     Properties:
