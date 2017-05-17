@@ -5,8 +5,9 @@ Description: |
   S3 backed website for use with CloudFlare. This template will create:
   + CodeCommit Git repository
   + S3 bucket for web site content
-  + Redirect from "www." to base domain
-  + Access logs written to logs bucket
+  + Redirect from "www." to naked domain / domain apex
+  + Access logs to a separate S3 bucket
+
 Metadata:
   AWS::CloudFormation::Interface:
     ParameterGroups:
@@ -18,6 +19,7 @@ Metadata:
         default: CODE COMMIT
       Parameters:
       - PreExistingGitRepository
+      - NotificationEmail
     - Label:
         default: WEBSITE BUCKETS
       Parameters:
@@ -32,11 +34,13 @@ Metadata:
         default: Root Domain
       PreExistingGitRepository:
         default: Repo Name
+      NotificationEmail:
+        default: Notifications Email
       PreExistingSiteBucket:
         default: Website Bucket Name
       PreExistingRedirectBucket:
         default: Redirect Bucket Name
-      PreExistingLogsBucket
+      PreExistingLogsBucket:
         default: Logs for Bucket Name
 # Help for CloudFormation Parameters
 # http://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/parameters-section-structure.html
@@ -56,22 +60,31 @@ Parameters:
     Description: "OPTIONAL - Git repository name for pre-existing CodeCommit repository. Leave empty to have CodeCommit Repository created and managed by this stack."
     Type: String
     Default: ""
+    
+  # Email address to receive Git activity notifications: you@anotherdomain.com
+  # CANNOT be in same domain!
+  NotificationEmail:
+    Type: String
+    Description: "Initial email address to receive Git change notifications. Make sure verify the email."
+    MinLength: 6
+    AllowedPattern: ".+@[a-z0-9]+[-.a-z0-9]*(\\.[a-z][a-z]+)+"
+    ConstraintDescription: "Provide a valid email address"
   
   # Keep an S3 bucket instead of deleting.
   # "If you want to continue to use the same bucket name, don't delete the bucket."
   # Ref: http://docs.aws.amazon.com/AmazonS3/latest/user-guide/delete-bucket.html
   PreExistingSiteBucket:
-    Description: "OPTIONAL - name of pre-existing website bucket. Leave empty to have website bucket created and managed by this stack. Avoid deleting and recreating buckets as it can take a long time for the name to become available again."
+    Description: "OPTIONAL - Name of pre-existing website bucket. Leave empty to have website bucket created and managed by this stack. Avoid deleting and recreating buckets as it can take a long time for the name to become available again."
     Type: String
     Default: ""
 
   PreExistingRedirectBucket:
-    Description: "OPTIONAL - name of pre-existing 'www' redirect bucket. Leave empty to have redirect bucket created and managed by this stack. Avoid deleting and recreating buckets as it can take a long time for the name to become available again."
+    Description: "OPTIONAL - Name of pre-existing 'www' redirect bucket. Leave empty to have redirect bucket created and managed by this stack. Avoid deleting and recreating buckets as it can take a long time for the name to become available again."
     Type: String
     Default: ""
 
   PreExistingLogsBucket:
-    Description: "Optional name of pre-existing access logs bucket. Leave empty to have access logs bucket created and managed by this stack."
+    Description: "OPTIONAL - Name of pre-existing access logs bucket. Leave empty to have access logs bucket created and managed by this stack."
     Type: String
     Default: ""
 
@@ -99,7 +112,10 @@ Resources:
     Properties:
       BucketName: !Ref DomainName
       AccessControl: PublicRead
-      VersioningConfiguration: enabled
+      # Keep versions of website content in case of 'accidents'.
+      # For help reference: http://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-properties-s3-bucket.html#cfn-s3-bucket-versioning
+      VersioningConfiguration: 
+        Status: Enabled
       WebsiteConfiguration:
         IndexDocument: index.html
         ErrorDocument: error.html
@@ -138,29 +154,78 @@ Resources:
           Events:
             - all
     DeletionPolicy: Retain
+    
+  # SNS topic for Git repository activity. Email subscription
+  NotificationTopic:
+    Type: "AWS::SNS::Topic"
+    Properties:
+      DisplayName: !Sub "Activity in ${DomainName} Git repository"
+      Subscription:
+        - Endpoint: !Ref NotificationEmail
+          Protocol: email
+  
+  # Don't be a sheep and use IAM Policy AdministratorAccess account for everything!
+  # Put users into this group that will only manage this CodeCommit repository.
+  WebSiteMgmtGroup:
+    Type: "AWS::IAM::Group"
+    Properties:
+      GroupName: !Join ['', [!Ref DomainName, "-", "Contributors"]]
+      # It's tempting to add the following property but since we are referencing in CodeCommitPolicy: below
+      # no need to add. Otherwise, CloudFormation will spit out a "Circular Dependency" error.
+      #Policies:
+      #  - Ref: CodeCommitPolicy
+  
+  # Lock down policy to the specific CodeCommit repo being created in this stack.
+  CodeCommitPolicy:
+    # Help for Policies:
+    # http://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-resource-iam-policy.html#cfn-iam-policy-roles
+    Type: AWS::IAM::Policy
+    Properties:
+      PolicyName: !Join ['', ["CodeCommit", "-", !Ref DomainName, "-", !Ref 'AWS::Region' ]]
+      # The actions listed below have modified from the default AWS AWSCodeCommitPowerUser IAM Policy.
+      PolicyDocument:
+        Statement:
+        - Effect: Allow
+          Action:
+          - codecommit:BatchGetRepositories
+          - codecommit:CreateBranch
+          - codecommit:Get*
+          - codecommit:GitPull
+          - codecommit:GitPush
+          - codecommit:List*
+          - codecommit:Put*
+          - codecommit:Test*
+          - codecommit:Update*
+          Resource:
+          - !GetAtt GitRepository.Arn
+      Groups:
+      - Ref: WebSiteMgmtGroup
 
 # Mappings:
 
 Outputs:
   DomainName:
-    Description: Domain name
+    Description: This static website's domain name.
     Value: !Ref DomainName
   RedirectDomainName:
-    Description: Redirect hostname
+    Description: Redirect www hostname to naked domain / domain apex.
     Value: !If [NeedsNewRedirectBucket, !Ref RedirectBucket, !Ref PreExistingRedirectBucket]
   SiteBucket:
     Value: !If [NeedsNewSiteBucket, !Ref SiteBucket, !Ref PreExistingSiteBucket]
   RedirectBucket:
     Value: !If [NeedsNewRedirectBucket, !Ref RedirectBucket, !Ref PreExistingRedirectBucket]
   LogsBucket:
-    Description: S3 Bucket with access logs
+    Description: Access logs for your website.
     Value: !If [NeedsNewLogsBucket, !Ref LogsBucket, !Ref PreExistingLogsBucket]
   GitRepositoryName:
     Description: Git repository name
     Value: !If [NeedsNewGitRepository, !Ref DomainName, !Ref PreExistingGitRepository]
+  NotificationsEmailAddress:
+    Description: CodeCommit notifications will be sent to this email address.
+    Value: !Ref NotificationEmail
   GitCloneUrlHttp:
-    Description: Git https clone endpoint
+    Description: Git HTTPS endpoint for clone and push.
     Value: !If [NeedsNewGitRepository, !GetAtt GitRepository.CloneUrlHttp, "N/A"]
   GitCloneUrlSsh:
-    Description: Git ssh clone endpoint
+    Description: Git SSH endpoint for clone and push.
     Value: !If [NeedsNewGitRepository, !GetAtt GitRepository.CloneUrlSsh, "N/A"]
