@@ -1,0 +1,166 @@
+---
+AWSTemplateFormatVersion: "2010-09-09"
+
+Description: |
+  S3 backed website for use with CloudFlare. This template will create:
+  + CodeCommit Git repository
+  + S3 bucket for web site content
+  + Redirect from "www." to base domain
+  + Access logs written to logs bucket
+Metadata:
+  AWS::CloudFormation::Interface:
+    ParameterGroups:
+    - Label:
+        default: DOMAIN
+      Parameters:
+      - DomainName
+    - Label:
+        default: CODE COMMIT
+      Parameters:
+      - PreExistingGitRepository
+    - Label:
+        default: WEBSITE BUCKETS
+      Parameters:
+      - PreExistingSiteBucket
+      - PreExistingRedirectBucket
+    - Label:
+        default: LOGGING & MONITORING
+      Parameters:
+      - PreExistingLogsBucket
+    ParameterLabels:
+      DomainName:
+        default: Root Domain
+      PreExistingGitRepository:
+        default: Repo Name
+      PreExistingSiteBucket:
+        default: Website Bucket Name
+      PreExistingRedirectBucket:
+        default: Redirect Bucket Name
+      PreExistingLogsBucket
+        default: Logs for Bucket Name
+# Help for CloudFormation Parameters
+# http://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/parameters-section-structure.html
+Parameters:
+  # Domain: example.com
+  DomainName:
+    Type: String
+    Description: "The naked domain / zone apex for your website - don't use 'www'!"
+    Default: example.com
+    # Jesus REGEX can be a pain in the rear! http://rubular.com/ is a good resource if you get stuck. 
+    # Helpful but usually not reference for REGEX in CloudFormation templates:
+    # http://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/cfn-regexes.html
+    AllowedPattern: "^([a-z0-9]|[a-z0-9][a-z0-9\\-]{0,61}[a-z0-9])(\\.([a-z0-9]|[a-z0-9][a-z0-9\\-]{0,61}[a-z0-9]))*$"
+    ConstraintDescription: "Provide a valid domain name using only lowercase letters, numbers, and dashes (-)"
+
+  PreExistingGitRepository:
+    Description: "OPTIONAL - Git repository name for pre-existing CodeCommit repository. Leave empty to have CodeCommit Repository created and managed by this stack."
+    Type: String
+    Default: ""
+  
+  # Keep an S3 bucket instead of deleting.
+  # "If you want to continue to use the same bucket name, don't delete the bucket."
+  # Ref: http://docs.aws.amazon.com/AmazonS3/latest/user-guide/delete-bucket.html
+  PreExistingSiteBucket:
+    Description: "OPTIONAL - name of pre-existing website bucket. Leave empty to have website bucket created and managed by this stack. Avoid deleting and recreating buckets as it can take a long time for the name to become available again."
+    Type: String
+    Default: ""
+
+  PreExistingRedirectBucket:
+    Description: "OPTIONAL - name of pre-existing 'www' redirect bucket. Leave empty to have redirect bucket created and managed by this stack. Avoid deleting and recreating buckets as it can take a long time for the name to become available again."
+    Type: String
+    Default: ""
+
+  PreExistingLogsBucket:
+    Description: "Optional name of pre-existing access logs bucket. Leave empty to have access logs bucket created and managed by this stack."
+    Type: String
+    Default: ""
+
+Conditions:
+  NeedsNewGitRepository: !Equals [!Ref PreExistingGitRepository, ""]
+  NeedsNewSiteBucket: !Equals [!Ref PreExistingSiteBucket, ""]
+  NeedsNewRedirectBucket: !Equals [!Ref PreExistingRedirectBucket, ""]
+  NeedsNewLogsBucket: !Equals [!Ref PreExistingLogsBucket, ""]
+
+Resources:
+  # Bucket for CloudFront and S3 access logs: logs.example.com
+  LogsBucket:
+    Condition: NeedsNewLogsBucket
+    Type: "AWS::S3::Bucket"
+    Properties:
+      BucketName: !Sub "logs.${DomainName}"
+      AccessControl: LogDeliveryWrite
+    DeletionPolicy: Retain
+
+  # Bucket for site content: example.com
+  SiteBucket:
+    Condition: NeedsNewSiteBucket
+    DeletionPolicy: Retain
+    Type: "AWS::S3::Bucket"
+    Properties:
+      BucketName: !Ref DomainName
+      AccessControl: PublicRead
+      VersioningConfiguration: enabled
+      WebsiteConfiguration:
+        IndexDocument: index.html
+        ErrorDocument: error.html
+      # logs.example.com/logs/s3/example.com/
+      LoggingConfiguration:
+        DestinationBucketName: !If [NeedsNewLogsBucket, !Ref LogsBucket, !Ref PreExistingLogsBucket]
+        LogFilePrefix: !Sub "logs/s3/${DomainName}/"
+
+  # Bucket to redirect to example.com: www.example.com
+  RedirectBucket:
+    Condition: NeedsNewRedirectBucket
+    DeletionPolicy: Retain
+    Type: "AWS::S3::Bucket"
+    Properties:
+      BucketName: !Sub "www.${DomainName}"
+      AccessControl: BucketOwnerFullControl
+      # logs.example.com/logs/s3/www.example.com/
+      LoggingConfiguration:
+        DestinationBucketName: !If [NeedsNewLogsBucket, !Ref LogsBucket, !Ref PreExistingLogsBucket]
+        LogFilePrefix: !Sub "logs/s3/www.${DomainName}/"
+      WebsiteConfiguration:
+        RedirectAllRequestsTo:
+          HostName: !Ref DomainName
+          Protocol: https
+
+  # Git repository: example.com
+  GitRepository:
+    Condition: NeedsNewGitRepository
+    Type: "AWS::CodeCommit::Repository"
+    Properties:
+      RepositoryDescription: !Sub "Git repository for ${DomainName}"
+      RepositoryName: !Ref DomainName
+      Triggers:
+        - Name: !Sub "Activity in ${DomainName} Git repository"
+          DestinationArn: !Ref NotificationTopic
+          Events:
+            - all
+    DeletionPolicy: Retain
+
+# Mappings:
+
+Outputs:
+  DomainName:
+    Description: Domain name
+    Value: !Ref DomainName
+  RedirectDomainName:
+    Description: Redirect hostname
+    Value: !If [NeedsNewRedirectBucket, !Ref RedirectBucket, !Ref PreExistingRedirectBucket]
+  SiteBucket:
+    Value: !If [NeedsNewSiteBucket, !Ref SiteBucket, !Ref PreExistingSiteBucket]
+  RedirectBucket:
+    Value: !If [NeedsNewRedirectBucket, !Ref RedirectBucket, !Ref PreExistingRedirectBucket]
+  LogsBucket:
+    Description: S3 Bucket with access logs
+    Value: !If [NeedsNewLogsBucket, !Ref LogsBucket, !Ref PreExistingLogsBucket]
+  GitRepositoryName:
+    Description: Git repository name
+    Value: !If [NeedsNewGitRepository, !Ref DomainName, !Ref PreExistingGitRepository]
+  GitCloneUrlHttp:
+    Description: Git https clone endpoint
+    Value: !If [NeedsNewGitRepository, !GetAtt GitRepository.CloneUrlHttp, "N/A"]
+  GitCloneUrlSsh:
+    Description: Git ssh clone endpoint
+    Value: !If [NeedsNewGitRepository, !GetAtt GitRepository.CloneUrlSsh, "N/A"]
