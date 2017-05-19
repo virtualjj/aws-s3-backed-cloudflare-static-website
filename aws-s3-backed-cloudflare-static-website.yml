@@ -193,7 +193,7 @@ Resources:
     #  - arn:aws:iam::aws:policy/IAMUserSSHKeys
     #Policies:
     #  - Policies
-      UserName: !Join ['', [!Ref DomainName, -CodeCommit-, !Ref 'AWS::Region' ]]
+      UserName: !Join ['', [!Ref DomainName, -CodeCommitUser-, !Ref 'AWS::Region' ]]
   
   WebSiteMgmtGroup:
     Type: "AWS::IAM::Group"
