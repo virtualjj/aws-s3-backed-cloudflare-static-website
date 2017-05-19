@@ -16,7 +16,7 @@ Metadata:
       Parameters:
       - DomainName
     - Label:
-        default: CODE COMMIT
+        default: CODE COMMIT - N.VIRGINIA, OHIO, OREGON, IRELAND ONLY
       Parameters:
       - PreExistingGitRepository
       - NotificationEmail
