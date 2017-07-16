@@ -16,7 +16,7 @@ Metadata:
       Parameters:
       - DomainName
     - Label:
-        default: CODE COMMIT - Ohio, N. Virginia, Oregon, Ireland, Tokyo, Singapore, Sydney, Frankfurt ONLY
+        default: CODE COMMIT
       Parameters:
       - PreExistingGitRepository
       - NotificationEmail
@@ -68,14 +68,14 @@ Parameters:
   # CANNOT be in same domain!
   NotificationEmail:
     Type: String
-    Description: "Initial email address to receive Git change notifications. Make sure verify the email."
+    Description: "Initial email address to receive Git change notifications. Make sure to verify the email."
     MinLength: 6
     AllowedPattern: ".+@[a-z0-9]+[-.a-z0-9]*(\\.[a-z][a-z]+)+"
     ConstraintDescription: "Provide a valid email address"
     
   PreExistingCodeCommitUser:
     Type: String
-    Description: "OPTIONAL - Name of a user that will only have SSH access for this website's CodeCommit repo. Leave empty to have an IAM user created and managed by this stack. The user created with this stack will not have Programmatic access or AWS Management Console access. Note that SSH keys have to be generated separately and the generated public key will need to be uploaded by the administrator. Also note that you need to manually remove the SSH key before deleting this stack otherwise stack deletion will fail."
+    Description: "OPTIONAL - Name of a user that will only have SSH access for this website's CodeCommit repo. Leave empty to have an IAM user created and managed by this stack. The user created with this stack will not have programmatic access or AWS Management Console access. Note that SSH keys have to be generated separately and the generated public key will need to be uploaded by the administrator. Also note that you need to manually remove the SSH key before deleting this stack otherwise stack deletion will fail."
   
   # Keep an S3 bucket instead of deleting.
   # "If you want to continue to use the same bucket name, don't delete the bucket."
