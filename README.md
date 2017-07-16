@@ -46,7 +46,7 @@ aws s3 ls s3://<FQDN>
 <img src="https://github.com/virtualjj/aws-s3-backed-cloudflare-static-website/blob/master/images/readme/deploystep-004-enter-fqdn.jpg" alt="Enter the FQDN of the bucket name." height="75%" width="75%">
 </p>
 
-5. To have the CodeCommit repo created for you using your domain name, leave it blank. The stack's deletion policy for this resource is set to *Retain* so if you delete the stack, the CodeCommit repository will not be deleted. Next enter an email address using a different domain to receive notifications for changes. Finally, I recommend setting up a user to push changes to CodeCommit for your static website instead of using an AWS user that has administrator access.
+5. To have the CodeCommit repo created for you using your domain name, leave it blank. The stack's deletion policy for this resource is set to *Retain* so if you delete the stack, the CodeCommit repository will not be deleted. Next enter an email address using a different domain to receive notifications for changes. Finally, I recommend setting up a group with limited access for users to push changes to CodeCommit for your static website instead of using an AWS user that has administrator access.
 
 <p align="center"> 
 <img src="https://github.com/virtualjj/aws-s3-backed-cloudflare-static-website/blob/master/images/readme/deploystep-005-codecommit-setup.jpg" alt="Enter the FQDN of the bucket name." height="75%" width="75%">
@@ -73,13 +73,31 @@ aws s3 ls s3://<FQDN>
 9. Depending on how AWS is feeling it will take only a few minutes for the launch to complete.
 
 <p align="center"> 
-<img src="https://github.com/virtualjj/aws-s3-backed-cloudflare-static-website/blob/master/images/readme/deploystep-009-stack-launch-success.jpg" alt="Review stack, acknowledge, and click create." height="75%" width="75%">
+<img src="https://github.com/virtualjj/aws-s3-backed-cloudflare-static-website/blob/master/images/readme/deploystep-009-stack-launch-success.jpg" alt="Wait for launch completion." height="75%" width="75%">
 </p>
 
 10. Click on the ***Options*** dropdown to view details of the created resources.
 
 <p align="center"> 
-<img src="https://github.com/virtualjj/aws-s3-backed-cloudflare-static-website/blob/master/images/readme/deploystep-010-stack-options.jpg" alt="Review stack, acknowledge, and click create." height="75%" width="75%">
+<img src="https://github.com/virtualjj/aws-s3-backed-cloudflare-static-website/blob/master/images/readme/deploystep-010-stack-options.jpg" alt="Click the options dropdown to see details of created resources." height="75%" width="75%">
+</p>
+
+11. Confirm that all of your buckets were created in S3.
+
+<p align="center"> 
+<img src="https://github.com/virtualjj/aws-s3-backed-cloudflare-static-website/blob/master/images/readme/deploystep-011-confirm-created-s3-buckets.jpg" alt="Confirm S3 buckets were created." height="75%" width="75%">
+</p>
+
+12. Confirm that a CodeCommit repository was created.
+
+<p align="center"> 
+<img src="https://github.com/virtualjj/aws-s3-backed-cloudflare-static-website/blob/master/images/readme/deploystep-012-confirm-created-codecommit-repo.jpg" alt="Confirm CodeCommit repo was created." height="75%" width="75%">
+</p>
+
+13. Confirm an IAM group was created and review the policy.
+
+<p align="center"> 
+<img src="https://github.com/virtualjj/aws-s3-backed-cloudflare-static-website/blob/master/images/readme/deploystep-013-confirm-created-iam-group.jpg" alt="Confirm an IAM group was created." height="75%" width="75%">
 </p>
 
 
