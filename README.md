@@ -8,6 +8,17 @@ I've seen a lot of S3 static website projects that use [AWS CloudFront](http://d
 
 ### Preparation
 
+Before launching the stack you might want to check if the FQDN of your domain name is available. S3 is a global service so if *microsoft.com* for example is already taken, its taken in all regions. This is important to note as the stack will fail if the S3 bucket already exists. If you already have a bucket created you can simply include it in the stack. If you have the AWS CLI installed you can check whether or not a bucket is available or not with this command:
+
+```
+aws s3 ls s3://<FQDN>
+```
+
+<p align="center"> 
+<img src="https://github.com/virtualjj/aws-s3-backed-cloudflare-static-website/blob/master/images/readme/prepstep-000-confirm-bucket-availability.jpg" alt="Check if bucket name already exists." height="75%" width="75%">
+</p>
+
+
 ### Stack Deployment
 
 1. Login to your AWS account and select the region that you want to deploy your S3 static website bucket. This is very important as its easy to accidentally open tabs in other regions.
@@ -16,13 +27,9 @@ I've seen a lot of S3 static website projects that use [AWS CloudFront](http://d
 <img src="https://github.com/virtualjj/aws-s3-backed-cloudflare-static-website/blob/master/images/readme/deploystep-000-login-region-check.jpg" alt="Make sure you are in the intended AWS region." height="75%" width="75%">
 </p>
 
+
 2. Click the **Launch Stack** button below to go directly to the CloudFormation service in the selected region of your AWS account.
 
 [![Launch CloudFormation Stack](https://s3.amazonaws.com/cloudformation-examples/cloudformation-launch-stack.png
 )](https://console.aws.amazon.com/cloudformation/home?region=us-west-2#/stacks/new?stackName=s3-cloudflare-static-website&templateURL=https://s3-us-west-2.amazonaws.com/github.aws-s3-backed-cloudflare-static-website/aws-s3-backed-cloudflare-static-website.yml)
 
-3. 
-
-<p align="center"> 
-<img src="https://github.com/virtualjj/aws-s3-backed-cloudflare-static-website/blob/master/images/readme/caveats-cannot-create-microsoft-com-bucket.jpg" alt="Cannot create static website bucket names that have already been claimed." height="75%" width="75%">
-</p>
