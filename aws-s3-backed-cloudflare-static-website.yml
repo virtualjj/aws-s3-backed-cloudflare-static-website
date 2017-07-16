@@ -60,7 +60,7 @@ Parameters:
     ConstraintDescription: "Provide a valid domain name using only lowercase letters, numbers, and dashes (-)"
 
   PreExistingGitRepository:
-    Description: "OPTIONAL - Git repository name for pre-existing CodeCommit repository. Leave empty to have CodeCommit Repository created and managed by this stack."
+    Description: "OPTIONAL - Git repository name for pre-existing CodeCommit repository. Leave empty to have CodeCommit repository created and managed by this stack."
     Type: String
     Default: ""
     
@@ -68,7 +68,7 @@ Parameters:
   # CANNOT be in same domain!
   NotificationEmail:
     Type: String
-    Description: "Initial email address to receive Git change notifications. Make sure to verify the email."
+    Description: "Initial email address to receive Git change notifications via SNS. Make sure to verify the email when it arrives."
     MinLength: 6
     AllowedPattern: ".+@[a-z0-9]+[-.a-z0-9]*(\\.[a-z][a-z]+)+"
     ConstraintDescription: "Provide a valid email address"
