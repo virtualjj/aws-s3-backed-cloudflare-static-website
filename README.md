@@ -15,8 +15,7 @@ I've seen a lot of S3 static website projects that use [AWS CloudFront](http://d
 2. Click the **Launch Stack** button below to go directly to the CloudFormation service in the selected region of your AWS account.
 
 [![Launch CloudFormation Stack](https://s3.amazonaws.com/cloudformation-examples/cloudformation-launch-stack.png
-)](https://console.aws.amazon.com/cloudformation/home?region=us-west-2#/stacks/new?stackName=s3-cloudflare-static-website&templateURL=https://s3-us-west-2.amazonaws.com/github.aws-s3-backed-cloudflare-static-website/aws-s3-backed-cloudflare-static-website/aws-s3-backed-cloudflare-static-website.yml)
-
+)](https://console.aws.amazon.com/cloudformation/home?region=us-west-2#/stacks/new?stackName=s3-cloudflare-static-website&templateURL=https://s3-us-west-2.amazonaws.com/github.aws-s3-backed-cloudflare-static-website/aws-s3-backed-cloudflare-static-website.yml)
 
 
 <p align="center"> 
