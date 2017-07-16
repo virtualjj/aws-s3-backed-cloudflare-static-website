@@ -61,7 +61,7 @@ aws s3 ls s3://<FQDN>
 7. There isn't much to do at the **Options** screen. Feel free to add some custom tags (good practice by the way) otherwise click **Next**.
 
 <p align="center"> 
-<img src="https://github.com/virtualjj/aws-s3-backed-cloudflare-static-website/blob/master/images/readme/deploystep-007-site-and-logging-buckets.jpg" alt="Options screen, not much to do here." height="75%" width="75%">
+<img src="https://github.com/virtualjj/aws-s3-backed-cloudflare-static-website/blob/master/images/readme/deploystep-007-options-tags.jpg" alt="Options screen, not much to do here." height="75%" width="75%">
 </p>
 
 8. This is the final confirmation screen before launching the stack. You can confirm the parameter settings that you chose. Also note that the stack will rollback on failure so you won't have any orphaned resources if something goes whacky. Make sure to check the acknowledgement check box and click **Create**.
@@ -69,3 +69,20 @@ aws s3 ls s3://<FQDN>
 <p align="center"> 
 <img src="https://github.com/virtualjj/aws-s3-backed-cloudflare-static-website/blob/master/images/readme/deploystep-008-confirm-before-launch.jpg" alt="Review stack, acknowledge, and click create." height="75%" width="75%">
 </p>
+
+9. Depending on how AWS is feeling it will take only a few minutes for the launch to complete.
+
+<p align="center"> 
+<img src="https://github.com/virtualjj/aws-s3-backed-cloudflare-static-website/blob/master/images/readme/deploystep-009-stack-launch-success.jpg" alt="Review stack, acknowledge, and click create." height="75%" width="75%">
+</p>
+
+10. Click on the ***Options*** dropdown to view details of the created resources.
+
+<p align="center"> 
+<img src="https://github.com/virtualjj/aws-s3-backed-cloudflare-static-website/blob/master/images/readme/deploystep-010-stack-options.jpg" alt="Review stack, acknowledge, and click create." height="75%" width="75%">
+</p>
+
+
+
+
+
