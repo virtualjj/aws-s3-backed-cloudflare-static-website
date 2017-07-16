@@ -76,7 +76,7 @@ aws s3 ls s3://<FQDN>
 <img src="https://github.com/virtualjj/aws-s3-backed-cloudflare-static-website/blob/master/images/readme/deploystep-009-stack-launch-success.jpg" alt="Wait for launch completion." height="75%" width="75%">
 </p>
 
-10. Click on the ***Options*** dropdown to view details of the created resources.
+10. Click on the ***Options*** drop down to view details of the created resources.
 
 <p align="center"> 
 <img src="https://github.com/virtualjj/aws-s3-backed-cloudflare-static-website/blob/master/images/readme/deploystep-010-stack-options.jpg" alt="Click the options dropdown to see details of created resources." height="75%" width="75%">
@@ -99,6 +99,13 @@ aws s3 ls s3://<FQDN>
 <p align="center"> 
 <img src="https://github.com/virtualjj/aws-s3-backed-cloudflare-static-website/blob/master/images/readme/deploystep-013-confirm-created-iam-group.jpg" alt="Confirm an IAM group was created." height="75%" width="75%">
 </p>
+
+More to add...
+
+## Acknowledgments
+
+Thanks to Eric Hammond for inspiring me to work on this project. Much of his [alestic/aws-git-backed-static-website](https://github.com/alestic/aws-git-backed-static-website) template was used as the basis for this project.
+
 
 
 
