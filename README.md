@@ -18,8 +18,6 @@ aws s3 ls s3://<FQDN>
 <img src="https://github.com/virtualjj/aws-s3-backed-cloudflare-static-website/blob/master/images/readme/prepstep-000-confirm-bucket-availability.jpg" alt="Check if bucket name already exists." height="75%" width="75%">
 </p>
 
-
-
 ### Stack Deployment
 
 1. Login to your AWS account and select the region that you want to deploy your S3 static website bucket. This is very important as its easy to accidentally open tabs in other regions.
@@ -100,7 +98,15 @@ aws s3 ls s3://<FQDN>
 <img src="https://github.com/virtualjj/aws-s3-backed-cloudflare-static-website/blob/master/images/readme/deploystep-013-confirm-created-iam-group.jpg" alt="Confirm an IAM group was created." height="75%" width="75%">
 </p>
 
-More to add...
+14. Go back to S3 and click on your site's root S3 bucket. When you click on its **Properties** and then **Static Web Hosting** you can see its URL. 
+
+More to come...
+
+### DNS and CloudFlare Configuration
+
+
+
+
 
 ## Acknowledgments
 
