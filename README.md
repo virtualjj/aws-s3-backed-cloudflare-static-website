@@ -139,10 +139,22 @@ Basically all you have to do is upload an *index.html* document to your static w
 <img src="https://github.com/virtualjj/aws-s3-backed-cloudflare-static-website/blob/master/images/readme/confirmhosting-001-find-s3-endpoints.jpg" alt="Find the S3 endpoint URLs in the Outputs section of the launched CloudFormation stack." height="75%" width="75%">
 </p>
 
-2. Click on the URL for **SiteBucketEndpoint**&mdash;you should see the following error:
+2. Click on the URL for **SiteBucketEndpoint**&mdash;you should see the following error. This is because the objects (i.e. keys) index.html and error.html do not exist:
 
 <p align="center">
 <img src="https://github.com/virtualjj/aws-s3-backed-cloudflare-static-website/blob/master/images/readme/confirmhosting-002-no-key-exists.jpg" alt="Cannot open the S3 endpoint because no key (i.e. object) exists for index.html or error.html." height="75%" width="75%">
+</p>
+
+3. Upload a test site or simple file that has at least an *index.html* file. I will be fancy and use the [particles.js](http://vincentgarreau.com/particles.js/) library demo for my test:
+
+<p align="center">
+<img src="https://github.com/virtualjj/aws-s3-backed-cloudflare-static-website/blob/master/images/readme/confirmhosting-003-drag-in-files.jpg" alt="Drag or upload your website that at least has an index.html." height="75%" width="75%">
+</p>
+
+Make sure you at least have an index.html (that isn't empty preferably) object in your bucket.
+
+<p align="center">
+<img src="https://github.com/virtualjj/aws-s3-backed-cloudflare-static-website/blob/master/images/readme/confirmhosting-003-make-sure.indexhtml.jpg" alt="Make sure you have an index.html in your site bucket." height="75%" width="75%">
 </p>
 
 
