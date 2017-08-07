@@ -80,7 +80,7 @@ If your bucket name is available let the stack create it for you to save you som
 3. You will now see the **Create Stack** section of CloudFormation. The most important thing to confirm on this screen is the region&mdash;again. The CloudFormation template is stored and hosted publicly on ***my*** AWS account. Click **Next**.
 
 <p align="center">
-<img src="https://github.com/virtualjj/aws-s3-backed-cloudflare-static-website/blob/master/images/readme/deploystep-003-region-check-again.jpg" alt="Double-check the intended AWS region." height="75%" width="75%">
+<img src="https://github.com/virtualjj/aws-s3-backed-cloudflare-static-website/blob/master/images/readme/deploystep-001-region-check-again.jpg" alt="Double-check the intended AWS region." height="75%" width="75%">
 </p>
 
 4. Enter your __ROOT DOMAIN__ name __without__ the *www* prefix. You also need to enter an email address that has a __different__ domain name than the one you will use for the static website S3 bucket. Leave __Repo Name__ and __CodeCommit User__ blank to follow along with this tutorial.
