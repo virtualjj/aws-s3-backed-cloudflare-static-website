@@ -53,7 +53,7 @@ Parameters:
     Type: String
     Description: "The naked domain / zone apex for your website - don't use 'www'!"
     Default: example.com
-    # Jesus REGEX can be a pain in the rear! http://rubular.com/ is a good resource if you get stuck. 
+    # Jesus REGEX can be a pain in the rear! http://rubular.com/ is a good resource if you get stuck.
     # Helpful but usually not reference for REGEX in CloudFormation templates:
     # http://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/cfn-regexes.html
     AllowedPattern: "^([a-z0-9]|[a-z0-9][a-z0-9\\-]{0,61}[a-z0-9])(\\.([a-z0-9]|[a-z0-9][a-z0-9\\-]{0,61}[a-z0-9]))*$"
@@ -63,7 +63,7 @@ Parameters:
     Description: "OPTIONAL - Git repository name for pre-existing CodeCommit repository. Leave empty to have CodeCommit repository created and managed by this stack."
     Type: String
     Default: ""
-    
+
   # Email address to receive Git activity notifications: you@anotherdomain.com
   # CANNOT be in same domain!
   NotificationEmail:
@@ -72,11 +72,11 @@ Parameters:
     MinLength: 6
     AllowedPattern: ".+@[a-z0-9]+[-.a-z0-9]*(\\.[a-z][a-z]+)+"
     ConstraintDescription: "Provide a valid email address"
-    
+
   PreExistingCodeCommitUser:
     Type: String
     Description: "OPTIONAL - Name of a user that will only have SSH access for this website's CodeCommit repo. Leave empty to have an IAM user created and managed by this stack. The user created with this stack will not have programmatic access or AWS Management Console access. Note that SSH keys have to be generated separately and the generated public key will need to be uploaded by the administrator. Also note that you need to manually remove the SSH key before deleting this stack otherwise stack deletion will fail."
-  
+
   # Keep an S3 bucket instead of deleting.
   # "If you want to continue to use the same bucket name, don't delete the bucket."
   # Ref: http://docs.aws.amazon.com/AmazonS3/latest/user-guide/delete-bucket.html
@@ -122,7 +122,7 @@ Resources:
       AccessControl: PublicRead
       # Keep versions of website content in case of 'accidents'.
       # For help reference: http://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-properties-s3-bucket.html#cfn-s3-bucket-versioning
-      VersioningConfiguration: 
+      VersioningConfiguration:
         Status: Enabled
       WebsiteConfiguration:
         IndexDocument: index.html
@@ -171,16 +171,16 @@ Resources:
       Subscription:
         - Endpoint: !Ref NotificationEmail
           Protocol: email
-  
+
   # Don't be a sheep and use IAM Policy AdministratorAccess account for everything!
   # Put users into this group that will only manage this CodeCommit repository.
-  
+
   CodeCommitUser:
     # Help for IAM User:
     # http://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-properties-iam-user.html
     Condition: NeedsNewCodeCommitUser
     Type: "AWS::IAM::User"
-    Properties: 
+    Properties:
       Groups:
       - Ref: WebSiteMgmtGroup
     # AWS documentation state that to use SSH for connecting to AWS CodeCommit you need to add the following
@@ -194,7 +194,7 @@ Resources:
     #Policies:
     #  - Policies
       UserName: !Join ['', [!Ref DomainName, -CodeCommitUser-, !Ref 'AWS::Region' ]]
-  
+
   WebSiteMgmtGroup:
     Type: "AWS::IAM::Group"
     Properties:
@@ -203,7 +203,7 @@ Resources:
       # no need to add. Otherwise, CloudFormation will spit out a "Circular Dependency" error.
       #Policies:
       #  - Ref: CodeCommitPolicy
-  
+
   # Policy for the group with only the required entitlements to manage the CodeCommit repo and S3 bucket.
   WebSiteMgmtPolicy:
     # Help for Policies:
@@ -240,7 +240,7 @@ Resources:
           - codecommit:Test*
           - codecommit:Update*
           Resource:
-          - !GetAtt GitRepository.Arn  
+          - !GetAtt GitRepository.Arn
       Groups:
       - Ref: WebSiteMgmtGroup
 
@@ -255,8 +255,14 @@ Outputs:
     Value: !If [NeedsNewRedirectBucket, !Ref RedirectBucket, !Ref PreExistingRedirectBucket]
   SiteBucket:
     Value: !If [NeedsNewSiteBucket, !Ref SiteBucket, !Ref PreExistingSiteBucket]
+  SiteBucketEndpoint:
+    Description: Add this to the apex CNAME in Cloudflare.
+    Value: !GetAtt SiteBucket.WebsiteURL
   RedirectBucket:
     Value: !If [NeedsNewRedirectBucket, !Ref RedirectBucket, !Ref PreExistingRedirectBucket]
+  RedirectBucketEndpoint:
+    Description: Add this to the www CNAME in Cloudflare.
+    Value: !GetAtt RedirectBucket.WebsiteURL
   LogsBucket:
     Description: Access logs for your website.
     Value: !If [NeedsNewLogsBucket, !Ref LogsBucket, !Ref PreExistingLogsBucket]
