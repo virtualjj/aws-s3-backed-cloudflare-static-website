@@ -123,8 +123,11 @@ If your bucket name is available let the stack create it for you to save you som
 <img src="https://github.com/virtualjj/aws-s3-backed-cloudflare-static-website/blob/master/images/readme/stackdeployment-009-stack-launch-success.jpg" alt="Stack successfully created." height="75%" width="75%">
 </p>
 
-10. Click on the ***Options*** drop down to view details of the created resources. We will reference these throughout this tutorial.
+10. Click on the ***Outputs*** drop down to view details of the created resources. We will reference these throughout this tutorial.
 
+<p align="center">
+<img src="https://github.com/virtualjj/aws-s3-backed-cloudflare-static-website/blob/master/images/readme/stackdeployment-010-confirm-stack-outputs.jpg" alt="View stack Outputs for details of created resources." height="75%" width="75%">
+</p>
 
 
 ## Acknowledgments
