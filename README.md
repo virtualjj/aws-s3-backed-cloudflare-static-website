@@ -6,11 +6,13 @@ I've seen a lot of S3 static website projects that use [AWS CloudFront](http://d
 
 Since this this project is supposed to work with CloudFlare, you will of course need a CloudFlare account. If you don't have a free account yet create one [here](https://www.cloudflare.com/a/sign-up).
 
-CloudFlare does a great explaining how to get started but make sure the domain name for the site you plan on hosting with AWS S3 has it's name servers set to CloudFlare's&mdash;here is an example:
+CloudFlare does a great job explaining how to get started but make sure the domain name for the site you plan on hosting with AWS S3 has it's name servers set to CloudFlare's&mdash;here is an example of the one that I will use for this tutorial:
 
 <p align="center">
 <img src="https://github.com/virtualjj/aws-s3-backed-cloudflare-static-website/blob/master/images/readme/prereq-000-confirm-cloudflare-dns-setup.jpg" alt="Example DNS configured with CloudFlare." height="75%" width="75%">
 </p>
+
+There is an arrow pointing to __SSL:Flexible__&mdash;that brings us to a small caveat&hellip;
 
 ## Caveats
 
@@ -19,6 +21,8 @@ Combining S3 static web hosting buckets with CloudFlare will allow you to enable
 > If your Amazon S3 bucket is configured as a website endpoint, you can't configure CloudFront to use HTTPS to communicate with your origin because Amazon S3 doesn't support HTTPS connections in that configuration.
 
 Source: http://docs.aws.amazon.com/AmazonCloudFront/latest/DeveloperGuide/using-https-cloudfront-to-s3-origin.html
+
+You will need to set CloudFlare's SSL option to **Flexible** which means that your visitors will connect to your web site over TLS to CloudFlare's CDN and then CloudFlare will connect to your AWS S3 origin (i.e. static website bucket) *unencrypted*. This shouldn't be an issue for personal blogs or small websites but I wanted to clarify this caveat as it could be a showstopper for some. Details about CloudFlare's SSL options can be referenced [here](https://support.cloudflare.com/hc/en-us/articles/204144518-SSL-FAQ).
 
 ## CONFIRM S3 BUCKET NAME AVAILABILITY
 
