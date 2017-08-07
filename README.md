@@ -145,7 +145,11 @@ Basically all you have to do is upload an *index.html* document to your static w
 <img src="https://github.com/virtualjj/aws-s3-backed-cloudflare-static-website/blob/master/images/readme/confirmhosting-002-no-key-exists.jpg" alt="Cannot open the S3 endpoint because no key (i.e. object) exists for index.html or error.html." height="75%" width="75%">
 </p>
 
-3. Upload a test site or simple file that has at least an *index.html* file. I will be fancy and use the [particles.js](http://vincentgarreau.com/particles.js/) library demo for my test:
+3. Upload a simple *index.html* file. I will use one that has only the following line:
+
+```
+<h1>WORKS</h1>
+```
 
 <p align="center">
 <img src="https://github.com/virtualjj/aws-s3-backed-cloudflare-static-website/blob/master/images/readme/confirmhosting-003-drag-in-files.jpg" alt="Drag or upload your website that at least has an index.html." height="75%" width="75%">
@@ -155,6 +159,36 @@ Make sure you at least have an index.html (that isn't empty preferably) object i
 
 <p align="center">
 <img src="https://github.com/virtualjj/aws-s3-backed-cloudflare-static-website/blob/master/images/readme/confirmhosting-003-make-sure.indexhtml.jpg" alt="Make sure you have an index.html in your site bucket." height="75%" width="75%">
+</p>
+
+4. Refresh your browser or click on the endpoint URL again like you did in step 2&mdash;you will get a new error message:
+
+<p align="center">
+<img src="https://github.com/virtualjj/aws-s3-backed-cloudflare-static-website/blob/master/images/readme/confirmhosting-004-access-denied.jpg" alt="Access denied when trying to open index.html." height="75%" width="75%">
+</p>
+
+The problem is that there is an index.html but it is not publicly accessible. Since you'll want visitors to be able to view your site, the files need to be public. Note that I could have configured the CloudFormation template to make the bucket public by default but I opted not to in order to avoid folks accidentally uploading sensitive files.
+
+5. Open the the __Permissions__ tab and and then click on __Bucket Policy__. From here you can paste in the following policy&mdash;make sure to replace `<YOUR BUCKET NAME>` with your bucket name:
+
+```
+{
+    "Version": "2008-10-17",
+    "Statement": [
+        {
+            "Sid": "AllowPublicRead",
+            "Effect": "Allow",
+            "Principal": {
+                "AWS": "*"
+            },
+            "Action": "s3:GetObject",
+            "Resource": "arn:aws:s3:::<YOUR BUCKET NAME>/*"
+        }
+    ]
+}
+```
+<p align="center">
+<img src="https://github.com/virtualjj/aws-s3-backed-cloudflare-static-website/blob/master/images/readme/confirmhosting-005-add-public-access-policy.jpg" alt="Access denied when trying to open index.html." height="75%" width="75%">
 </p>
 
 
