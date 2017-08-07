@@ -219,9 +219,13 @@ Now that you confirmed that static web hosting is working, it's time to add the 
 
 4. Go to [whatsmydns.net](https://www.whatsmydns.net) to confirm that Cloudflare DNS is resolving your domain name. Note that you have to keep the A record setting because Cloudlfare uses [CNAME Flattening](https://support.cloudflare.com/hc/en-us/articles/200169056-CNAME-Flattening-RFC-compliant-support-for-CNAME-at-the-root) which presents CNAME's as A records.
 
-p align="center">
+<p align="center">
 <img src="https://github.com/virtualjj/aws-s3-backed-cloudflare-static-website/blob/master/images/readme/addcname-004-confirm-dns-propagation.jpg" alt="Use whatsmydns.net to confirm DNS propagation." height="75%" width="75%">
 </p>
+
+5. Your site should now open on it's domain name now instead of the S3 endpoint. If [whatsmydns.net](https://www.whatsmydns.net) is showing all green checks but your browser is not resolving the DNS name, clear out your DNS cache.
+
+
 
 ## ACKNOWLEDGMENTS
 
