@@ -129,6 +129,23 @@ If your bucket name is available let the stack create it for you to save you som
 <img src="https://github.com/virtualjj/aws-s3-backed-cloudflare-static-website/blob/master/images/readme/stackdeployment-010-confirm-stack-outputs.jpg" alt="View stack Outputs for details of created resources." height="75%" width="75%">
 </p>
 
+## CONFIRM STATIC HOSTING WORKS
+
+Basically all you have to do is upload an *index.html* document to your static web hosting enabled S3 bucket. However, this can be tricky if you are new to S3 so I'll provide a more "involved" example.
+
+1. In the **Outputs** section of the CloudFormation stack that you launched you should see the S3 endpoints for the site bucket and the redirect bucket:
+
+<p align="center">
+<img src="https://github.com/virtualjj/aws-s3-backed-cloudflare-static-website/blob/master/images/readme/confirmhosting-001-find-s3-endpoints.jpg" alt="Find the S3 endpoint URLs in the Outputs section of the launched CloudFormation stack." height="75%" width="75%">
+</p>
+
+2. Click on the URL for **SiteBucketEndpoint**&mdash;you should see the following error:
+
+<p align="center">
+<img src="https://github.com/virtualjj/aws-s3-backed-cloudflare-static-website/blob/master/images/readme/confirmhosting-002-no-key-exists.jpg" alt="Cannot open the S3 endpoint because no key (i.e. object) exists for index.html or error.html." height="75%" width="75%">
+</p>
+
+
 
 ## Acknowledgments
 
