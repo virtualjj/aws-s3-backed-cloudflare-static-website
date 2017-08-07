@@ -189,13 +189,34 @@ Make sure you at least have an index.html (that isn't empty preferably) object i
 <img src="https://github.com/virtualjj/aws-s3-backed-cloudflare-static-website/blob/master/images/readme/confirmhosting-005-add-public-access-policy.jpg" alt="Add a policy to allow public access." height="75%" width="75%">
 </p>
 
-6. Now when you refresh the site you should get your index.html file&mdash;in my case, **WORKS**. Here is a screenshot with the developer tools enabled. Notice that the servers shows **S3** and the port is 80:
+6. Now when you refresh the site you should get your index.html file&mdash;in my case, **WORKS**. Here is a screenshot with the developer tools enabled. Notice that the server shows **S3** and the port is 80:
 
 <p align="center">
 <img src="https://github.com/virtualjj/aws-s3-backed-cloudflare-static-website/blob/master/images/readme/confirmhosting-006-refresh-site-view-indexhtml.jpg" alt="Successfully load index.html." height="75%" width="75%">
 </p>
 
+## ADD CNAME TO CLOUDFLARE
 
-## Acknowledgments
+Now that you confirmed that static web hosting is working, it's time to add the root and www S3 endpoints to Cloudflare as CNAME records.
+
+1. Copy the URL of the site endpoint listed next to __SiteBucketEndpoint__ in the __Outputs__ section of the launched CloudFormation template __WITHOUT__ the `http://*` portion:
+
+<p align="center">
+<img src="https://github.com/virtualjj/aws-s3-backed-cloudflare-static-website/blob/master/images/readme/addcname-001-add-root-cname-endpoint.jpg" alt="Add the site root CNAME endpoint." height="75%" width="75%">
+</p>
+
+2. Next do the same thing for the redirect bucket labelled __RedirectBucketEndpoint__:
+
+<p align="center">
+<img src="https://github.com/virtualjj/aws-s3-backed-cloudflare-static-website/blob/master/images/readme/addcname-002-add-www-cname-endpoint.jpg" alt="Add the site www redirect CNAME endpoint." height="75%" width="75%">
+</p>
+
+3. You should now have two CNAME entries that reference your static web hosting enabled S3 buckets. Note that the orange clouds to the right can be toggled on and off&mdash;off (i.e. grey cloud) means that Cloudflare is just running DNS show none of the other features (e.g. CDN, WAF, redirects, etc.) will be applied: 
+
+<p align="center">
+<img src="https://github.com/virtualjj/aws-s3-backed-cloudflare-static-website/blob/master/images/readme/addcname-003-confirm-two-cname.jpg" alt="CLoudflare should now have two CNAME references to your S3 buckets." height="75%" width="75%">
+</p>
+
+## ACKNOWLEDGMENTS
 
 Thanks to Eric Hammond for inspiring me to work on this project. Much of his [alestic/aws-git-backed-static-website](https://github.com/alestic/aws-git-backed-static-website) template was used as the basis for this project.
