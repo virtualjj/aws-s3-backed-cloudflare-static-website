@@ -86,7 +86,7 @@ If your bucket name is available let the stack create it for you to save you som
 4. Enter your __ROOT DOMAIN__ name __without__ the *www* prefix. You also need to enter an email address that has a __different__ domain name than the one you will use for the static website S3 bucket. Leave __Repo Name__ and __CodeCommit User__ blank to follow along with this tutorial.
 
 <p align="center">
-<img src="https://github.com/virtualjj/aws-s3-backed-cloudflare-static-website/blob/master/images/readme/deploystep-004-enter-fqdn.jpg" alt="Enter the FQDN of the bucket name." height="75%" width="75%">
+<img src="https://github.com/virtualjj/aws-s3-backed-cloudflare-static-website/blob/master/images/readme/deploystep-002-enter-root-domain-name.jpg" alt="Enter the FQDN of the bucket name." height="75%" width="75%">
 </p>
 
 5. If this is the first time using this template you will typically leave all these fields blank. However, if you already have __Website Bucket Name__, __Redirect Bucket Name__, and __Logs for Bucket Name__ already created then enter them here. The [DeletionPolicy](http://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-attribute-deletionpolicy.html) attribute is set to **retain** for S3 buckets created by this template. Click **Next**.
