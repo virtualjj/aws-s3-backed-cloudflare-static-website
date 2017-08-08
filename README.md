@@ -252,7 +252,7 @@ Now that you confirmed that static web hosting is working, it's time to add the 
 <img src="https://github.com/virtualjj/aws-s3-backed-cloudflare-static-website/blob/master/images/readme/addcname-002-add-www-cname-endpoint.jpg" alt="Add the site www redirect CNAME endpoint." height="75%" width="75%">
 </p>
 
-3. You should now have two CNAME entries that reference your static web hosting enabled S3 buckets. Note that the orange clouds to the right can be toggled on and off&mdash;off (i.e. grey cloud) means that Cloudflare is just running DNS show none of the other features (e.g. CDN, WAF, redirects, etc.) will be applied:
+3. You should now have two CNAME entries that reference your static web hosting enabled S3 buckets. Note that the orange clouds to the right can be toggled on and off. __off__ (i.e. grey cloud) means that Cloudflare is just running DNS so none of the other features (e.g. CDN, WAF, redirects, etc.) will be applied:
 
 <p align="center">
 <img src="https://github.com/virtualjj/aws-s3-backed-cloudflare-static-website/blob/master/images/readme/addcname-003-confirm-two-cname.jpg" alt="CLoudflare should now have two CNAME references to your S3 buckets." height="75%" width="75%">
@@ -264,13 +264,13 @@ Now that you confirmed that static web hosting is working, it's time to add the 
 <img src="https://github.com/virtualjj/aws-s3-backed-cloudflare-static-website/blob/master/images/readme/addcname-004-confirm-dns-propagation.jpg" alt="Use whatsmydns.net to confirm DNS propagation." height="75%" width="75%">
 </p>
 
-5. Your site should now open on it's domain name now instead of the S3 endpoint. Note that the server now shows __cloudflare-nginx__ If [whatsmydns.net](https://www.whatsmydns.net) is showing all green checks but your browser is not resolving the DNS name, clear out your DNS cache.
+5. Your site should now open on it's domain name instead of the S3 endpoint. Note that the server now shows __cloudflare-nginx__ instead of __AmazonS3__. If [whatsmydns.net](https://www.whatsmydns.net) is showing all green checks but your browser is not resolving the DNS name, clear out your DNS cache. Depending on your setup you might have to do this in multiple places. (i.e. PC, Router, etc.)
 
 <p align="center">
 <img src="https://github.com/virtualjj/aws-s3-backed-cloudflare-static-website/blob/master/images/readme/addcname-005-confirm-can-open-site.jpg" alt="Confirm that you can access your S3 static website using your domain name." height="75%" width="75%">
 </p>
 
-If the your website times out make sure that __Crypto__ section in Cloudflare is set to `Flexible`:
+If the your website times out make sure that the __Crypto__ section in Cloudflare is set to `Flexible`:
 
 <p align="center">
 <img src="https://github.com/virtualjj/aws-s3-backed-cloudflare-static-website/blob/master/images/readme/addcname-005-confirm-crypto-set-to-flexible.jpg" alt="Make sure Cloudflare Crypto option is set to Flexible." height="75%" width="75%">
@@ -308,7 +308,7 @@ If you used the default settings when launching the stack, you should have a new
 <img src="https://github.com/virtualjj/aws-s3-backed-cloudflare-static-website/blob/master/images/readme/codecommitconfig-000-confirm-group-user.jpg" alt="Confirm IAM group and user." height="75%" width="75%">
 </p>
 
-Click on the __Permissions__ tab and notice the __Inline Policies__ section. A policy was created by this template and attached to the *group*, not the IAM user. Normally you would click on __Show Policy__ but for whatever reason CloudFormation generated policies display all on one-line. Argh. So click on __Edit Policy__ instead to get a better view of what permissions have been applied to the group:
+Click on the __Permissions__ tab and notice the __Inline Policies__ section. A policy was created by this template and attached to the *group*, not the IAM user. Normally you would click on __Show Policy__ but for whatever reason CloudFormation generated policies display all on one line. Instead click on __Edit Policy__ to get a better view of what permissions have been applied to the group:
 
 <p align="center">
 <img src="https://github.com/virtualjj/aws-s3-backed-cloudflare-static-website/blob/master/images/readme/codecommitconfig-000-edit-policy-for-better-view.jpg" alt="Click on Edit Policy to get a better view of the applied policy created by the stack." height="75%" width="75%">
@@ -357,11 +357,11 @@ Here is the actual policy (with my AWS account number masked):
 }
 ```
 
-This policy will allow any IAM user in the group have the required permissions to manage the static website's S3 bucket and CodeCommit repository.
+This policy will allow any IAM user in the group to have the required permissions to manage *only* the static website's S3 bucket and CodeCommit repository.
 
-Now that you understand what the group does it's time to make the CodeCommmit user configuration. AWS has good documentation on how to configure the IAM user for CodeCommit [here](http://docs.aws.amazon.com/codecommit/latest/userguide/setting-up.html) but I will demonstrate the way I like to do it.
+Now that you understand what the group does it's time to setup the CodeCommmit user configuration. AWS has good documentation on how to configure the IAM user for CodeCommit [here](http://docs.aws.amazon.com/codecommit/latest/userguide/setting-up.html) but I will demonstrate the way I like to do it.
 
-1. Create a key pair using `ssh-keygen`like the OS X command line example below. If you haven't done this before get your path with `pwd` so you know exactly where to save your public and private key pair. I like to use a bit size of `4096` but choose what you are comfortable with. For the name of the key pair use whatever make sense to you but in this example I will use the actual IAM user name of `tutorialstuff.xyz-CodeCommitUser-us-west-2`. Finally, I always use passwords on my SSH keys and I recommend you do the same but make sure you don't store the passphrase with the private key as that will defeat the purpose:
+1. Create a key pair using `ssh-keygen` as illustrated in the OS X command line example below. If you haven't done this before get your path with `pwd` so you know exactly where to save your public and private key pair. I like to store mine in a separate location than the default for various reason, one being backup. I like to use a bit size of `4096` but choose what you are comfortable with. For the name of the key pair use whatever make sense to you but in this example I will use the actual IAM user name of `tutorialstuff.xyz-CodeCommitUser-us-west-2` that was created by the CloudFormation stack. Finally, I always use passwords on my SSH keys and I recommend you do the same but make sure you don't store the passphrase with the private key as that will defeat the purpose:
 
 ```
 > pwd
@@ -394,7 +394,7 @@ drwxr-xr-x  10 virtualjj  staff   340 Aug  8 11:05 ..
 -r--------   1 virtualjj  staff   745 Aug  8 11:18 tutorialstuff.xyz-CodeCommitUser-us-west-2.pub
 ```
 
-2. Next click on the IAM user created by this stack and click on the __Security Credentials__ tab. Scroll down and select the __Upload SSH public key__ button:
+2. Next click on the IAM user created by this stack and click on the __Security credentials__ tab. Scroll down and select the __Upload SSH public key__ button:
 
 <p align="center">
 <img src="https://github.com/virtualjj/aws-s3-backed-cloudflare-static-website/blob/master/images/readme/codecommitconfig-002-upload-codecommit-keypair.jpg" alt="Upload your CodeCommit public key." height="75%" width="75%">
@@ -409,7 +409,7 @@ pbcopy < tutorialstuff.xyz-CodeCommitUser-us-west-2.pub
 <img src="https://github.com/virtualjj/aws-s3-backed-cloudflare-static-website/blob/master/images/readme/codecommitconfig-003-copy-public-key-to-clipboard.jpg" alt="Use pbcopy to copy public key to clipboard and upload to IAM.="75%" width="75%">
 </p>
 
-You should now have an uploaded CodeCommit public SSH key:
+You should now have an uploaded CodeCommit public SSH key. Keep note of the __SSH key ID__ as you will need it to configure your local Git repository later:
 
 <p align="center">
 <img src="https://github.com/virtualjj/aws-s3-backed-cloudflare-static-website/blob/master/images/readme/codecommitconfig-003-confirm-uploaded-cc-ssh-key.jpg" alt="Confirm that your CodeCommit SSH public key has been successfully uploaded.="75%" width="75%">
@@ -417,7 +417,7 @@ You should now have an uploaded CodeCommit public SSH key:
 
 ## SETUP HUGO WEBSITE EXAMPLE
 
-Now that your CodeCommit user has been setup with an SSH key you need to initialize a local repo with `git`. When we performed the steps in [CONFIRM STATIC HOSTING WORKS](#confirm-static-hosting-works) we used a simple index.html file. You will probably be using a static generator like [Hugo](https://gohugo.io/getting-started/) or [Jekyll](https://jekyllrb.com/) which has a lot of files to track.
+Now that your CodeCommit user has been setup with an SSH key you need to initialize a local repo with `git`. When we performed the steps in [CONFIRM STATIC HOSTING WORKS](#confirm-static-hosting-works) we used a simple index.html file. You'll probably be using a static generator like [Hugo](https://gohugo.io/getting-started/) or [Jekyll](https://jekyllrb.com/) which has a lot of files to track.
 
 1. As an example, I will setup a new Hugo site on my local OS X machine. If you don't have Hugo but want to try it you can follow the [Quick Start](https://gohugo.io/getting-started/quick-start/). Here are the commands to check the Hugo version, create a new site, change directory into it, and confirm your working path:
 
@@ -486,7 +486,7 @@ baseurl = "https://tutoriastuff.xyz/"
 theme = "aerial"
 ```
 
-6. Use the following command to run the site locally to confirm that the theme works. Open it on `localhost:1313`
+6. Use the following command to run the site locally to confirm that the theme works.
 
 ```
 hugo server --theme=aerial
@@ -501,7 +501,7 @@ Open up a new tab and go to `localhost:1313`. The local website and theme should
 <img src="https://github.com/virtualjj/aws-s3-backed-cloudflare-static-website/blob/master/images/readme/setuphugosite-006-view-local-hugo-site-and-theme.jpg" alt="View the Hugo site locally and make sure the theme is working.="75%" width="75%">
 </p>
 
-7. Press `Ctrl+C` to cancel the static website.
+7. In your terminal application press `Ctrl+C` to stop the Hugo local server.
 
 ## CONFIGURE CODECOMMIT GIT REPO
 
@@ -547,7 +547,7 @@ git remote add origin ssh://APKAJ2YFIEMJBW6MTT4A@git-codecommit.us-west-2.amazon
 <img src="https://github.com/virtualjj/aws-s3-backed-cloudflare-static-website/blob/master/images/readme/ccconfigure-003-add-remote-origin.jpg" alt="Add the CodeCommit remote origin URL to the local Git configuration.="75%" width="75%">
 </p>
 
-4. Check the status with `git status`; you will see a notification that there are untracked files. Then run `git add .` and commit the changes with `git commit -m "Initial commit."` Finally, try pushing the changes from your local repo to the AWS CodeCommit repo&mdash; that it will fail.
+4. Check the status with `git status`; you will see a notification that there are untracked files. Then run `git add .` and commit the changes with `git commit -m "Initial commit."` Finally, try pushing the changes from your local repo to the AWS CodeCommit repo&mdash;it will fail:
 
 ```
 Demo: git status
