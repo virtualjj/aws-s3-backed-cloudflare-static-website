@@ -1,4 +1,4 @@
-# AWS S3 Backed Static Website With Cloudflare
+." height="75%"# AWS S3 Backed Static Website With Cloudflare
 
 - [PURPOSE](#purpose)
 - [PREREQUISITES](#prerequisites)
@@ -406,13 +406,13 @@ drwxr-xr-x  10 virtualjj  staff   340 Aug  8 11:05 ..
 pbcopy < tutorialstuff.xyz-CodeCommitUser-us-west-2.pub
 ```
 <p align="center">
-<img src="https://github.com/virtualjj/aws-s3-backed-cloudflare-static-website/blob/master/images/readme/codecommitconfig-003-copy-public-key-to-clipboard.jpg" alt="Use pbcopy to copy public key to clipboard and upload to IAM.="75%" width="75%">
+<img src="https://github.com/virtualjj/aws-s3-backed-cloudflare-static-website/blob/master/images/readme/codecommitconfig-003-copy-public-key-to-clipboard.jpg" alt="Use pbcopy to copy public key to clipboard and upload to IAM." height="75%" width="75%">
 </p>
 
 You should now have an uploaded CodeCommit public SSH key. Keep note of the __SSH key ID__ as you will need it to configure your local Git repository later:
 
 <p align="center">
-<img src="https://github.com/virtualjj/aws-s3-backed-cloudflare-static-website/blob/master/images/readme/codecommitconfig-003-confirm-uploaded-cc-ssh-key.jpg" alt="Confirm that your CodeCommit SSH public key has been successfully uploaded.="75%" width="75%">
+<img src="https://github.com/virtualjj/aws-s3-backed-cloudflare-static-website/blob/master/images/readme/codecommitconfig-003-confirm-uploaded-cc-ssh-key.jpg" alt="Confirm that your CodeCommit SSH public key has been successfully uploaded." height="75%" width="75%">
 </p>
 
 ## SETUP HUGO WEBSITE EXAMPLE
@@ -459,13 +459,13 @@ git clone git clone https://github.com/sethmacleod/aerial.git
 ```
 
 <p align="center">
-<img src="https://github.com/virtualjj/aws-s3-backed-cloudflare-static-website/blob/master/images/readme/setuphugosite-003-download-theme.jpg" alt="Clone the Hugo Aerial theme to the local themes directory.="75%" width="75%">
+<img src="https://github.com/virtualjj/aws-s3-backed-cloudflare-static-website/blob/master/images/readme/setuphugosite-003-download-theme.jpg" alt="Clone the Hugo Aerial theme to the local themes directory." height="75%" width="75%">
 </p>
 
 4. Change directory back to the root of the local Hugo site you just created. Copy the Hugo theme's `exampleSite` __config.toml__ to your site's root folder. This file is what configures settings for Hugo and your theme. When you create a new Hugo site locally a config.toml file exists but it won't have the parameters necessary for the theme. The example below shows how I copied and overwrote the default __config.toml__:
 
 <p align="center">
-<img src="https://github.com/virtualjj/aws-s3-backed-cloudflare-static-website/blob/master/images/readme/setuphugosite-004-overwrite-config-toml-with-theme-one.jpg" alt="Overwrite the default Hugo new site config.toml with the theme's config.toml configuration file.="75%" width="75%">
+<img src="https://github.com/virtualjj/aws-s3-backed-cloudflare-static-website/blob/master/images/readme/setuphugosite-004-overwrite-config-toml-with-theme-one.jpg" alt="Overwrite the default Hugo new site config.toml with the theme's config.toml configuration file." height="75%" width="75%">
 </p>
 
 5. Open the config.toml file that you just copied in your favorite text editor. We need to change:
@@ -492,13 +492,13 @@ theme = "aerial"
 hugo server --theme=aerial
 ```
 <p align="center">
-<img src="https://github.com/virtualjj/aws-s3-backed-cloudflare-static-website/blob/master/images/readme/setuphugosite-006-generate-site-locally.jpg" alt="Generate Hugo site locally to confirm that the theme works.="75%" width="75%">
+<img src="https://github.com/virtualjj/aws-s3-backed-cloudflare-static-website/blob/master/images/readme/setuphugosite-006-generate-site-locally.jpg" alt="Generate Hugo site locally to confirm that the theme works." height="75%" width="75%">
 </p>
 
 Open up a new tab and go to `localhost:1313`. The local website and theme should display:
 
 <p align="center">
-<img src="https://github.com/virtualjj/aws-s3-backed-cloudflare-static-website/blob/master/images/readme/setuphugosite-006-view-local-hugo-site-and-theme.jpg" alt="View the Hugo site locally and make sure the theme is working.="75%" width="75%">
+<img src="https://github.com/virtualjj/aws-s3-backed-cloudflare-static-website/blob/master/images/readme/setuphugosite-006-view-local-hugo-site-and-theme.jpg" alt="View the Hugo site locally and make sure the theme is working." height="75%" width="75%">
 </p>
 
 7. In your terminal application press `Ctrl+C` to stop the Hugo local server.
@@ -516,7 +516,7 @@ git init
 Notice that you now have a __.git__ folder listed:
 
 <p align="center">
-<img src="https://github.com/virtualjj/aws-s3-backed-cloudflare-static-website/blob/master/images/readme/ccconfigure-001-git-init.jpg" alt="Initialize the Hugo website folder with git init.="75%" width="75%">
+<img src="https://github.com/virtualjj/aws-s3-backed-cloudflare-static-website/blob/master/images/readme/ccconfigure-001-git-init.jpg" alt="Initialize the Hugo website folder with git init." height="75%" width="75%">
 </p>
 
 Use the following command to view the Git configuration&mdash;notice there isn't much yet:
@@ -525,14 +525,14 @@ Use the following command to view the Git configuration&mdash;notice there isn't
 cat .git/config
 ```
 <p align="center">
-<img src="https://github.com/virtualjj/aws-s3-backed-cloudflare-static-website/blob/master/images/readme/ccconfigure-001-view-git-config.jpg" alt="View the local Git configuration.="75%" width="75%">
+<img src="https://github.com/virtualjj/aws-s3-backed-cloudflare-static-website/blob/master/images/readme/ccconfigure-001-view-git-config.jpg" alt="View the local Git configuration." height="75%" width="75%">
 </p>
 
 
 2. Now we need to add a remote origin&mdash;the CodeCommit repository&mdash;with your IAM user and CodeCommit SSH credentials. Refer back to the `Outputs` section of the launched CloudFormation stack. Look at the one labelled __GitCloneUrlSsh__ and copy the URL to a text editor&mdash;we will make a slight modification:
 
 <p align="center">
-<img src="https://github.com/virtualjj/aws-s3-backed-cloudflare-static-website/blob/master/images/readme/ccconfigure-002-get-ccommit-url-from-clf-outputs.jpg" alt="Get the CodeCommit URL from the Outputs section of the launched stack.="75%" width="75%">
+<img src="https://github.com/virtualjj/aws-s3-backed-cloudflare-static-website/blob/master/images/readme/ccconfigure-002-get-ccommit-url-from-clf-outputs.jpg" alt="Get the CodeCommit URL from the Outputs section of the launched stack." height="75%" width="75%">
 </p>
 
 Copy the URL and put your IAM SSH KEY ID that you created in [CONFIGURE CODECOMMIT USER](#configure-codecommit-user) before the CodeCommit URL with an ampersand. We will add the URL to the local Git configuration using the `git remote add origin` command. Here is what mine looks like:
@@ -544,7 +544,7 @@ git remote add origin ssh://APKAJ2YFIEMJBW6MTT4A@git-codecommit.us-west-2.amazon
 3. Execute the full `git remote add origin` command and view the Git config again:
 
 <p align="center">
-<img src="https://github.com/virtualjj/aws-s3-backed-cloudflare-static-website/blob/master/images/readme/ccconfigure-003-add-remote-origin.jpg" alt="Add the CodeCommit remote origin URL to the local Git configuration.="75%" width="75%">
+<img src="https://github.com/virtualjj/aws-s3-backed-cloudflare-static-website/blob/master/images/readme/ccconfigure-003-add-remote-origin.jpg" alt="Add the CodeCommit remote origin URL to the local Git configuration." height="75%" width="75%">
 </p>
 
 4. Check the status with `git status`; you will see a notification that there are untracked files. Then run `git add .` and commit the changes with `git commit -m "Initial commit."` Finally, try pushing the changes from your local repo to the AWS CodeCommit repo&mdash;it will fail:
@@ -608,13 +608,13 @@ Here is a screenshot of mine&mdash;note that I setup a passphrase on my SSH key 
  You will also receive an email notification of the activity:
 
  <p align="center">
- <img src="https://github.com/virtualjj/aws-s3-backed-cloudflare-static-website/blob/master/images/readme/ccconfigure-005-codecommit-sns-email-notification.jpg" alt="After performing an activity on CodeCommit receive an email notification.="75%" width="75%">
+ <img src="https://github.com/virtualjj/aws-s3-backed-cloudflare-static-website/blob/master/images/readme/ccconfigure-005-codecommit-sns-email-notification.jpg" alt="After performing an activity on CodeCommit receive an email notification." height="75%" width="75%">
  </p>
 
 6. Go to your AWS console and view the CodeCommit repository. You will be able to see the files that you committed locally now stored on your AWS CodeCommit repository:
 
 <p align="center">
-<img src="https://github.com/virtualjj/aws-s3-backed-cloudflare-static-website/blob/master/images/readme/ccconfigure-006-confirm-files-pushed-to-codecommit.jpg" alt="Confirm that local files that were committed have been successfully pushed to AWS CodeCommit.="75%" width="75%">
+<img src="https://github.com/virtualjj/aws-s3-backed-cloudflare-static-website/blob/master/images/readme/ccconfigure-006-confirm-files-pushed-to-codecommit.jpg" alt="Confirm that local files that were committed have been successfully pushed to AWS CodeCommit." height="75%" width="75%">
 </p>
 
 Now the only left to do is copy the files from your statically generated website&mdash;this tutorial's example will be the files in the __public__ folder generated by Hugo.
@@ -628,7 +628,7 @@ Continuing with our Hugo example, go ahead and generate the actual website using
 hugo -v
 ```
 <p align="center">
-<img src="https://github.com/virtualjj/aws-s3-backed-cloudflare-static-website/blob/master/images/readme/copystaticfiles-000-generate-hugo-ste.jpg" alt="Generate the Hugo static website to get the files that need to be uploaded to your S3 static website bucket.="75%" width="75%">
+<img src="https://github.com/virtualjj/aws-s3-backed-cloudflare-static-website/blob/master/images/readme/copystaticfiles-000-generate-hugo-ste.jpg" alt="Generate the Hugo static website to get the files that need to be uploaded to your S3 static website bucket." height="75%" width="75%">
 </p>
 
 Remember in [CONFIRM STATIC HOSTING WORKS](#confirm-static-hosting-works) you set your S3 static website bucket policy to public? There are actually two ways to do this. Here is the first way since we've already set the bucket to public.
@@ -638,37 +638,37 @@ Remember in [CONFIRM STATIC HOSTING WORKS](#confirm-static-hosting-works) you se
 Open the root static website S3 bucket and click the __Upload__ button. Here you can simply drag in the contents of that Hugo public folder. Note that the *index.html* that you previously created if you are following along step-by-step will be overwritten:
 
 <p align="center">
-<img src="https://github.com/virtualjj/aws-s3-backed-cloudflare-static-website/blob/master/images/readme/copystaticfiles-000-open-for-drag-drop.jpg" alt="Click upload to drag and drop the contents of your Hugo public folder.="75%" width="75%">
+<img src="https://github.com/virtualjj/aws-s3-backed-cloudflare-static-website/blob/master/images/readme/copystaticfiles-000-open-for-drag-drop.jpg" alt="Click upload to drag and drop the contents of your Hugo public folder." height="75%" width="75%">
 </p>
 
 Drag over the files and press the __Upload__ button:
 
 
 <p align="center">
-<img src="https://github.com/virtualjj/aws-s3-backed-cloudflare-static-website/blob/master/images/readme/copystaticfiles-000-upload-dragged-dropped-files.jpg" alt="Upload the files and folders that you dragged into the S3 uploader.="75%" width="75%">
+<img src="https://github.com/virtualjj/aws-s3-backed-cloudflare-static-website/blob/master/images/readme/copystaticfiles-000-upload-dragged-dropped-files.jpg" alt="Upload the files and folders that you dragged into the S3 uploader." height="75%" width="75%">
 </p>
 
 You can now access your website by DNS name and view your Hugo statically generated site using the Aero theme:
 
 <p align="center">
-<img src="https://github.com/virtualjj/aws-s3-backed-cloudflare-static-website/blob/master/images/readme/static-website-accessible-by-dns-name.jpg" alt="Access your website by DNS name to confirm that your Hugo generated site and theme work after uploaded to S3.="75%" width="75%">
+<img src="https://github.com/virtualjj/aws-s3-backed-cloudflare-static-website/blob/master/images/readme/static-website-accessible-by-dns-name.jpg" alt="Access your website by DNS name to confirm that your Hugo generated site and theme work after uploaded to S3." height="75%" width="75%">
 </p>
 
 ### CLI METHOD
 
-If you use this method you can upload your statically generated website via the AWS CLI. This might be preferable since you will be at the command line anyway however, you have to generated AWS Access Keys from the console.
+If you use this method you can upload your statically generated website via the AWS CLI. This might be preferable since you will be at the command line anyway however, you have to generate AWS Access Keys from the console.
 
 <p align="center">
-<img src="https://github.com/virtualjj/aws-s3-backed-cloudflare-static-website/blob/master/images/readme/copystaticfiles-000-climethod-create-access-key.jpg" alt="Create and access key so that you can run AWS CLI commands.="75%" width="75%">
+<img src="https://github.com/virtualjj/aws-s3-backed-cloudflare-static-website/blob/master/images/readme/copystaticfiles-000-climethod-create-access-key.jpg" alt="Create and access key so that you can run AWS CLI commands." height="75%" width="75%">
 </p>
 
-At the command prompt, run the command `aws configure` to add a profile for this limited IAM user. Use the data from the __Create access key__ for the __Access key ID__ and __Secret access key__:
+At the command prompt, run the command `aws configure` to add a profile for this limited IAM user. Use the data from the __Create access key__ for the __Access key ID__ and __Secret access key__. I usually don't store the Secret access key anywhere else (it's stored in plaintext on your local machine) and I don't worry about losing it as I can just disable the lost one and create a new one:
 
 <p align="center">
-<img src="https://github.com/virtualjj/aws-s3-backed-cloudflare-static-website/blob/master/images/readme/copystaticfiles-000-climethod-access-key-info.jpg" alt="Example of create access key ID and secret dialog box from IAM.="75%" width="75%">
+<img src="https://github.com/virtualjj/aws-s3-backed-cloudflare-static-website/blob/master/images/readme/copystaticfiles-000-climethod-access-key-info.jpg" alt="Example of create access key ID and secret dialog box from IAM." height="75%" width="75%">
 </p>
 
-Run the local AWS CLI configuration command&mdash;make sure to use a profile. Note that the example below has masked the actual ID and secret:
+Run the local AWS CLI configuration command&mdash;make sure to use a profile especially if you already have a default profile configured. Note that the example below has masked the actual ID and secret:
 ```
 Demo: aws configure --profile tutorialstuff-xyz
 AWS Access Key ID [None]: AKIAXXXXXXXXXXXXX
@@ -683,7 +683,7 @@ Now that you have Access keys configured try listing your static website bucket:
 aws s3 ls tutorialstuff.xyz --profile tutorialstuff-xyz
 ```
 <p align="center">
-<img src="https://github.com/virtualjj/aws-s3-backed-cloudflare-static-website/blob/master/images/readme/copystaticfiles-000-list-bucket-using-aws-cli.jpg" alt="List contents of static website bucket using AWS CLI.="75%" width="75%">
+<img src="https://github.com/virtualjj/aws-s3-backed-cloudflare-static-website/blob/master/images/readme/copystaticfiles-000-list-bucket-using-aws-cli.jpg" alt="List contents of static website bucket using AWS CLI." height="75%" width="75%">
 </p>
 
 This works because the IAM user that you enabled access keys for is part of the group that has a policy action of `s3:GetObject` set to `allow` for this specific S3 bucket.
@@ -691,13 +691,13 @@ This works because the IAM user that you enabled access keys for is part of the 
 You can delete the public bucket policy because we will set objects to public when we upload them via the AWS CLI:
 
 <p align="center">
-<img src="https://github.com/virtualjj/aws-s3-backed-cloudflare-static-website/blob/master/images/readme/copystaticfiles-000-delete-public-bucket-policy.jpg" alt="Delete the public bucket policy and use the AWS CLI instead.="75%" width="75%">
+<img src="https://github.com/virtualjj/aws-s3-backed-cloudflare-static-website/blob/master/images/readme/copystaticfiles-000-delete-public-bucket-policy.jpg" alt="Delete the public bucket policy and use the AWS CLI instead." height="75%" width="75%">
 </p>
 
 Confirm that you cannot access the website anymore (because the bucket policy was deleted):
 
 <p align="center">
-<img src="https://github.com/virtualjj/aws-s3-backed-cloudflare-static-website/blob/master/images/readme/copystaticfiles-000-confirm-access-denied-due-to-no-bucket-policy.jpg" alt="When the public access bucket policy is deleted the website will not be accessible anymore.="75%" width="75%">
+<img src="https://github.com/virtualjj/aws-s3-backed-cloudflare-static-website/blob/master/images/readme/copystaticfiles-000-confirm-access-denied-due-to-no-bucket-policy.jpg" alt="When the public access bucket policy is deleted the website will not be accessible anymore." height="75%" width="75%">
 </p>
 
 Now this time, when you generate the static website upload the files in the same command:
@@ -707,13 +707,13 @@ hugo -v && aws s3 sync --acl public-read --sse --delete public/ s3://tutorialstu
 ```
 
 <p align="center">
-<img src="https://github.com/virtualjj/aws-s3-backed-cloudflare-static-website/blob/master/images/readme/copystaticfiles-000-generate-site-upload-via-cli.jpg" alt="Generate the Hugo site and upload to S3 settting files to public.="75%" width="75%">
+<img src="https://github.com/virtualjj/aws-s3-backed-cloudflare-static-website/blob/master/images/readme/copystaticfiles-000-generate-site-upload-via-cli.jpg" alt="Generate the Hugo site and upload to S3 setting files to public." height="75%" width="75%">
 </p>
 
 The website should be accessible again:
 
 <p align="center">
-<img src="https://github.com/virtualjj/aws-s3-backed-cloudflare-static-website/blob/master/images/readme/static-website-accessible-by-dns-name.jpg" alt="Static website accessible by DNS name again.="75%" width="75%">
+<img src="https://github.com/virtualjj/aws-s3-backed-cloudflare-static-website/blob/master/images/readme/static-website-accessible-by-dns-name.jpg" alt="Static website accessible by DNS name again." height="75%" width="75%">
 </p>
 
 ## ACKNOWLEDGMENTS
