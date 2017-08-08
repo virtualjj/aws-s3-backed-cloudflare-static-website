@@ -6,6 +6,8 @@
   - [STACK DEPLOYMENT](#stack-deployment)
   - [CONFIRM STATIC HOSTING WORKS](#confirm-static-hosting-works)
   - [ADD CNAME TO CLOUDFLARE](#add-cname-to-cloudflare)
+  - [SETUP CLOUDFLARE HTTPS REDIRECT](#setup-cloudflare-https-redirect)
+  - [CONFIGURE CODECOMMIT USER](#configure-codecommit-user)
   - [ACKNOWLEDGMENTS](#acknowledgments)
 
 I've seen a lot of S3 static website projects that use [AWS CloudFront](http://docs.aws.amazon.com/AmazonCloudFront/latest/DeveloperGuide/Introduction.html) but not [Cloudflare](https://www.Cloudflare.com/). CloudFront is a terrific service but I think Cloudflare&mdash;especially the free version&mdash;has A LOT to offer and is probably more accessible for folks new to CDN (Content Delivery Network) and WAF (Web Application Firewall).
@@ -267,6 +269,7 @@ Note that in my example the site redirects to `https://tutorialstuff.xyz` and th
 <img src="https://github.com/virtualjj/aws-s3-backed-cloudflare-static-website/blob/master/images/readme/setupredirect-000-confirm-http-status-code.jpg" alt="Confirm the HTTP status code of 200 instead of 301 or 307." height="75%" width="75%">
 </p>
 
+## CONFIGURE CODECOMMIT USER
 
 ## ACKNOWLEDGMENTS
 
