@@ -1,4 +1,4 @@
-." height="75%"# AWS S3 Backed Static Website With Cloudflare
+# AWS S3 Backed Static Website With Cloudflare
 
 - [PURPOSE](#purpose)
 - [PREREQUISITES](#prerequisites)
@@ -16,6 +16,7 @@
 - [COPY STATIC WEBSITE FILES TO S3](#copy-static-website-files-to-s3)
   - [DRAG-AND-DROP METHOD](#drag-and-drop-method)
   - [CLI METHOD](#cli-method)
+- [SUMMARY](#summary)
 - [ACKNOWLEDGMENTS](#acknowledgments)
 
 ## PURPOSE
@@ -683,7 +684,7 @@ Now that you have Access keys configured try listing your static website bucket:
 aws s3 ls tutorialstuff.xyz --profile tutorialstuff-xyz
 ```
 <p align="center">
-<img src="https://github.com/virtualjj/aws-s3-backed-cloudflare-static-website/blob/master/images/readme/copystaticfiles-000-list-bucket-using-aws-cli.jpg" alt="List contents of static website bucket using AWS CLI." height="75%" width="75%">
+<img src="https://github.com/virtualjj/aws-s3-backed-cloudflare-static-website/blob/master/images/readme/copystaticfiles-000-list-bucket-using-aws-cli.jpg" alt="List contents of static website bucket using AWS CLI." height="90%" width="90%">
 </p>
 
 This works because the IAM user that you enabled access keys for is part of the group that has a policy action of `s3:GetObject` set to `allow` for this specific S3 bucket.
@@ -715,6 +716,10 @@ The website should be accessible again:
 <p align="center">
 <img src="https://github.com/virtualjj/aws-s3-backed-cloudflare-static-website/blob/master/images/readme/static-website-accessible-by-dns-name.jpg" alt="Static website accessible by DNS name again." height="75%" width="75%">
 </p>
+
+## SUMMARY
+
+I hope this CloudFormation template and tutorial helped you get started with a static website. There are many ways to do this as well as many other tools to automate the deployment of your static websites. However, hopefully you have enough knowledge now to decide what works (and doesn't) for you as well as the confidence to go out and try other methods of deploying static websites on AWS S3 with Cloudflare.
 
 ## ACKNOWLEDGMENTS
 
