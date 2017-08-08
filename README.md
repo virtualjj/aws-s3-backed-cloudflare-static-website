@@ -579,7 +579,7 @@ and the repository exists.
 ```
 
 <p align="center">
-<img src="https://github.com/virtualjj/aws-s3-backed-cloudflare-static-website/blob/master/images/readme/ccconfigure-004-initial-commit-fail.jpg" alt="Observe the failure of the initial commit.="75%" width="75%">
+<img src="https://github.com/virtualjj/aws-s3-backed-cloudflare-static-website/blob/master/images/readme/ccconfigure-004-initial-commit-fail.jpg" alt="Observe the failure of the initial commit.="90%" width="90%">
 </p>
 
 The reason why this happens is because the CodeCommit repo cannot confirm that you have or are using the correct private CodeCommit SSH key associated with the public key you uploaded your IAM user. Remember that key pair that you generated previously? We need to add the private key (hopefully passphrase protected) to our local SSH identity:
@@ -592,7 +592,7 @@ ssh-add -L
 Here is a screenshot of mine&mdash;note that I setup a passphrase on my SSH key so I have to enter it:
 
 <p align="center">
-<img src="https://github.com/virtualjj/aws-s3-backed-cloudflare-static-website/blob/master/images/readme/ccconfigure-004-add-ssh-key-identity.jpg" alt="Add SSH identity.="75%" width="75%">
+<img src="https://github.com/virtualjj/aws-s3-backed-cloudflare-static-website/blob/master/images/readme/ccconfigure-004-add-ssh-key-identity.jpg" alt="Add SSH identity.="90%" width="90%">
 </p>
 
  It's worth mentioning that this method is not what AWS explains to do in their [guide](http://docs.aws.amazon.com/codecommit/latest/userguide/setting-up-ssh-unixes.html). You should be aware that when your SSH identity is added, you won't be prompted for a passphrase each time so that could be a security concern depending on your environment. The threat is that a nefarious individual or bot could obtain shell access to your PC locally or remotely and execute commands since the identity is added to memory. While that is a concern, the likelihood is low and the impact is lower as well since the SSH key only has access to your website S3 bucket and CodeCommit repository. Other than deleting or modifying your public web site in an embarrassing way, there isn't much damage that could be done anyway versus if you were using an IAM user with full administrator access to your AWS account.
