@@ -20,17 +20,17 @@
 
 S3 backed static websites are becoming more and more popular but the learning curve for folks used to traditional CMSs (Content Management System) like Wordpress might have a hard time getting started. I created this project and __README.md__ so that newcomers can quickly get up and running while learning a bit more about AWS CodeCommit, IAM, and S3 by using an automated template to do most of the heavy lifting.
 
-I've seen a lot of S3 static website projects that use [AWS CloudFront](http://docs.aws.amazon.com/AmazonCloudFront/latest/DeveloperGuide/Introduction.html) but not [Cloudflare](https://www.Cloudflare.com/) which is intereting. CloudFront is a terrific service but I think Cloudflare&mdash;especially the free version&mdash;has A LOT to offer and is probably more accessible for folks new to CDN (Content Delivery Network).
+I've seen a lot of S3 static website projects that use [AWS CloudFront](http://docs.aws.amazon.com/AmazonCloudFront/latest/DeveloperGuide/Introduction.html) but not [Cloudflare](https://www.Cloudflare.com/) which is interesting. CloudFront is a terrific service but I think Cloudflare&mdash;especially the free version&mdash;has A LOT to offer and is probably more accessible for folks new to CDN (Content Delivery Network). If you are a diehard CloudFront supporter, at least agree with me that it's incredibly annoying having to wait at least 15 minutes to create or delete each CloudFront distribution.
 
-While it's tempting to get bogged down into the important details of security, application methodology, pipelines, the main goal of this project is to help newcomers get started and expand from there.
+While it's tempting to get bogged down into the important details of security, application methodology, pipelines, etc. the main goal of this project is to help newcomers get started and expand from there. I do sprinkle some security tidbits here and there but your security requirements will depend on your environment and threat model.
 
-Pull requests and feedback welcome so don't be shy!
+Pull requests and feedback are always welcome so don't be shy!
 
 ## PREREQUISITES
 
 You will need [Git](https://git-scm.com/downloads) and the [AWS CLI](http://docs.aws.amazon.com/cli/latest/userguide/installing.html) installed to follow many of the examples in this tutorial.
 
-Hugo is also used for an example static website so if you want to follow along you will need to install [Hugo](https://gohugo.io/getting-started/installing/).
+Hugo is also used for an example static website so if you want to follow along you will need to install [Hugo](https://gohugo.io/getting-started/installing/) to your local machine. The local Hugo application will generate the Hugo static website which will then be uploaded to the static website hosting enabled S3 bucket created by this CloudFormation template.
 
 Since this this project is supposed to work with Cloudflare, you will of course need a Cloudflare account. If you don't have a free account yet create one [here](https://www.Cloudflare.com/a/sign-up).
 
@@ -44,7 +44,7 @@ Notice the red arrow pointing to __SSL:Flexible__&mdash;that brings us to a smal
 
 ## CAVEATS
 
-Combining S3 static web hosting buckets with Cloudflare will allow you to enable HTTPS but it is not true end-to-end TLS. Actually, you wouldn't have it with CloudFront + AWS generated TLS certificates (ACM) either because static web hosting enabled S3 buckets do not work with HTTPS as an ***origin*** anyway:
+Combining S3 static web hosting buckets with Cloudflare will allow you to enable HTTPS but it's not true end-to-end TLS. Actually, you wouldn't have it with CloudFront + AWS generated TLS certificates ([ACM](https://aws.amazon.com/certificate-manager/)) either because static web hosting enabled S3 buckets do not work with HTTPS as an ***origin*** anyway:
 
 > If your Amazon S3 bucket is configured as a website endpoint, you can't configure CloudFront to use HTTPS to communicate with your origin because Amazon S3 doesn't support HTTPS connections in that configuration.
 
