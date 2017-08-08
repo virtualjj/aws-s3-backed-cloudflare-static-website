@@ -223,6 +223,9 @@ Make sure you at least have an index.html (that isn't empty preferably) object i
     ]
 }
 ```
+
+Here is what mine looks like:
+
 <p align="center">
 <img src="https://github.com/virtualjj/aws-s3-backed-cloudflare-static-website/blob/master/images/readme/confirmhosting-005-add-public-access-policy.jpg" alt="Add a policy to allow public access." height="75%" width="75%">
 </p>
