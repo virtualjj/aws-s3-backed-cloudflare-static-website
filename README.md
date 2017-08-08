@@ -54,7 +54,7 @@ Source: http://docs.aws.amazon.com/AmazonCloudFront/latest/DeveloperGuide/using-
 
 You will need to set Cloudflare's SSL option to **Flexible** which means that your visitors will connect to your web site over TLS to Cloudflare's CDN and then Cloudflare will connect to your AWS S3 origin (i.e. static website bucket) *unencrypted*. This shouldn't be an issue for personal blogs or small websites but I wanted to clarify this caveat as it could be a showstopper for some. Details about Cloudflare's SSL options can be referenced [here](https://support.Cloudflare.com/hc/en-us/articles/204144518-SSL-FAQ).
 
-The only real advantage of using CloudFront instead of Cloudflare when it comes to TLS certificates *for a lot of people* is that with AWS you get your own certificate (i.e. no shared) that can be used on your CloudFront distribution while Cloudflare's free version is actually a shared certificate. If you aren't sure what I'm talking about here is what you see when you view the certificate properties of a Cloudflare shared TLS certificate:
+The only real advantage of using CloudFront instead of Cloudflare when it comes to TLS certificates *for a lot of people* is that with AWS you get your own certificate (i.e. not shared) that can be used on your CloudFront distribution while Cloudflare's free version is actually a shared certificate. If you aren't sure what I'm talking about here is what you see when you view the certificate properties of a Cloudflare shared TLS certificate:
 
 <p align="center">
 <img src="https://github.com/virtualjj/aws-s3-backed-cloudflare-static-website/blob/master/images/readme/cloudflare-tls-cert-sharing-example.jpg" alt="Example of a Cloudflare shared TLS certificate." height="75%" width="75%">
