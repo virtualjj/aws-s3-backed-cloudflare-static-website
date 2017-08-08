@@ -7,6 +7,7 @@
   - [CONFIRM STATIC HOSTING WORKS](#confirm-static-hosting-works)
   - [ADD CNAME TO CLOUDFLARE](#add-cname-to-cloudflare)
   - [SETUP CLOUDFLARE HTTPS REDIRECT](#setup-cloudflare-https-redirect)
+  - [SETUP HUGO WEBSITE EXAMPLE](#setup-hugo-website-example)
   - [CONFIGURE CODECOMMIT USER](#configure-codecommit-user)
   - [ACKNOWLEDGMENTS](#acknowledgments)
 
@@ -328,7 +329,156 @@ Here is the actual policy (with my AWS account number masked):
 
 This policy will allow any IAM user in the group have the required permissions to manage the static website's S3 bucket and CodeCommit repository.
 
-The next thing you need to do is create a key pair for the CodeCommmit user.
+Now that you understand what the group does it's time to make the CodeCommmit user configuration. AWS has good documentation on how to configure the IAM user for CodeCommit [here](http://docs.aws.amazon.com/codecommit/latest/userguide/setting-up.html) but I will demonstrate the way I like to do it.
+
+1. Create a key pair using `ssh-keygen`like the OS X command line example below. If you haven't done this before get your path with `pwd` so you know exactly where to save your public and private key pair. I like to use a bit size of `4096` but choose what you are comfortable with. For the name of the key pair use whatever make sense to you but in this example I will use the actual IAM user name of `tutorialstuff.xyz-CodeCommitUser-us-west-2`. Finally, I always use passwords on my SSH keys and I recommend you do the same but make sure you don't store the passphrase with the private key as that will defeat the purpose:
+
+```
+> pwd
+/Users/virtualjj/Documents/AWS/SSH Keys/tutorialstuff.xyz
+> ssh-keygen -b 4096
+Generating public/private rsa key pair.
+> Enter file in which to save the key (/Users/virtualjj/.ssh/id_rsa): /Users/virtualjj/Documents/AWS/SSH Keys/tutorialstuff.xyz/tutorialstuff.xyz-CodeCommitUser-us-west-2
+Enter passphrase (empty for no passphrase):
+Enter same passphrase again:
+```
+<p align="center">
+<img src="https://github.com/virtualjj/aws-s3-backed-cloudflare-static-website/blob/master/images/readme/codecommitconfig-001-create-4096-keypair.jpg" alt="Create a 4096 bit passphrase protected key pair." height="75%" width="75%">
+</p>
+
+View the permissions of the generated public (.pub) and private key pair. Change them to __read-only__ using the `chmod` command:
+
+```
+Demo: ls -la
+total 16
+drwxr-xr-x   4 virtualjj  staff   136 Aug  8 11:18 .
+drwxr-xr-x  10 virtualjj  staff   340 Aug  8 11:05 ..
+-rw-------   1 virtualjj  staff  3326 Aug  8 11:18 tutorialstuff.xyz-CodeCommitUser-us-west-2
+-rw-r--r--   1 virtualjj  staff   745 Aug  8 11:18 tutorialstuff.xyz-CodeCommitUser-us-west-2.pub
+Demo: chmod 400 *
+Demo: ls -la
+total 16
+drwxr-xr-x   4 virtualjj  staff   136 Aug  8 11:18 .
+drwxr-xr-x  10 virtualjj  staff   340 Aug  8 11:05 ..
+-r--------   1 virtualjj  staff  3326 Aug  8 11:18 tutorialstuff.xyz-CodeCommitUser-us-west-2
+-r--------   1 virtualjj  staff   745 Aug  8 11:18 tutorialstuff.xyz-CodeCommitUser-us-west-2.pub
+```
+
+2. Next click on the IAM user created by this stack and click on the __Security Credentials__ tab. Scroll down and select the __Upload SSH public key__ button:
+
+<p align="center">
+<img src="https://github.com/virtualjj/aws-s3-backed-cloudflare-static-website/blob/master/images/readme/codecommitconfig-002-upload-codecommit-keypair.jpg" alt="Upload your CodeCommit public key." height="75%" width="75%">
+</p>
+
+3. On OS X I like to use a command called `pbcopy` to copy the contents of a file to my clipboard. You can copy the public key to your clipboard like this&mdash;make sure you copy the file with the extension of __.pub__:
+
+```
+pbcopy < tutorialstuff.xyz-CodeCommitUser-us-west-2.pub
+```
+<p align="center">
+<img src="https://github.com/virtualjj/aws-s3-backed-cloudflare-static-website/blob/master/images/readme/codecommitconfig-003-copy-public-key-to-clipboard.jpg" alt="Use pbcopy to copy public key to clipboard and upload to IAM.="75%" width="75%">
+</p>
+
+You should now have an uploaded CodeCommit public SSH key:
+
+<p align="center">
+<img src="https://github.com/virtualjj/aws-s3-backed-cloudflare-static-website/blob/master/images/readme/codecommitconfig-003-confirm-uploaded-cc-ssh-key.jpg" alt="Confirm that your CodeCommit SSH public key has been successfully uploaded.="75%" width="75%">
+</p>
+
+## SETUP HUGO WEBSITE EXAMPLE
+
+Now that your CodeCommit user has been setup with an SSH key you need to initialize a local repo with `git`. When we performed the steps in [CONFIRM STATIC HOSTING WORKS](#confirm-static-hosting-works) we used a simple index.html file. You will probably be using a static generator like [Hugo](https://gohugo.io/getting-started/) or [Jekyll](https://jekyllrb.com/) which has a lot of files to track.
+
+1. As an example, I will setup a new Hugo site on my local OS X machine. If you don't have Hugo but want to try it you can follow the [Quick Start](https://gohugo.io/getting-started/quick-start/). Here are the commands to check the Hugo version, create a new site, change directory into it, and confirm your working path:
+
+```
+Demo: hugo version
+Hugo Static Site Generator v0.25.1 darwin/amd64 BuildDate: 2017-07-13T00:40:37+09:00
+Demo: hugo new site s3-tutorialstuff.xyz
+Congratulations! Your new Hugo site is created in /Users/virtualjj/Documents/WEBSITES/s3-tutorialstuff.xyz.
+
+Just a few more steps and you're ready to go:
+
+1. Download a theme into the same-named folder.
+   Choose a theme from https://themes.gohugo.io/, or
+   create your own with the "hugo new theme <THEMENAME>" command.
+2. Perhaps you want to add some content. You can add single files
+   with "hugo new <SECTIONNAME>/<FILENAME>.<FORMAT>".
+3. Start the built-in live server via "hugo server".
+
+Visit https://gohugo.io/ for quickstart guide and full documentation.
+Demo: cd s3-tutorialstuff.xyz/
+Demo: pwd
+/Users/virtualjj/Documents/WEBSITES/s3-tutorialstuff.xyz
+```
+2. Next list the contents of the `themes` directory and change directory into it:
+
+```
+Demo: ls -la themes/
+total 0
+drwxr-xr-x  2 virtualjj  staff   68 Aug  8 11:49 .
+drwxr-xr-x  9 virtualjj  staff  306 Aug  8 11:49 ..
+Demo: cd themes/
+Demo: pwd
+/Users/virtualjj/Documents/WEBSITES/s3-tutorialstuff.xyz/themes
+```
+3. I will clone the [Aerial theme](https://themes.gohugo.io/aerial/) by [Seth MacLeod](https://www.sethmacleod.com/) and use it as an example:
+
+```
+git clone git clone https://github.com/sethmacleod/aerial.git
+```
+
+<p align="center">
+<img src="https://github.com/virtualjj/aws-s3-backed-cloudflare-static-website/blob/master/images/readme/setuphugosite-003-download-theme.jpg" alt="Clone the Hugo Aerial theme to the local themes directory.="75%" width="75%">
+</p>
+
+4. Change directory back to the root of the local Hugo site you just created. Copy the Hugo theme's `exampleSite` __config.toml__ to your site's root folder. This file is what configures settings for Hugo and your theme. When you create a new Hugo site locally a config.toml file exists but it won't have the parameters necessary for the theme. The example below shows how I copied and overwrote the default __config.toml__:
+
+<p align="center">
+<img src="https://github.com/virtualjj/aws-s3-backed-cloudflare-static-website/blob/master/images/readme/setuphugosite-004-overwrite-config-toml-with-theme-one.jpg" alt="Overwrite the default Hugo new site config.toml with the theme's config.toml configuration file.="75%" width="75%">
+</p>
+
+5. Open the config.toml file that you just copied in your favorite text editor. We need to change:
+
+```
+languageCode = "en-us"
+title = "Aerial"
+baseurl = "http://example.org/"
+theme = "aerial"
+```
+
+To this&mdash;specifically the `baseurl`. If you don't change the `baseurl` to your domain name the theme links will break and not work properly when you upload the generated site to S3:
+
+```
+languageCode = "en-us"
+title = "Aerial"
+baseurl = "https://tutoriastuff.xyz/"
+theme = "aerial"
+```
+
+6. Use the following command to run the site locally to confirm that the theme works. Open it on `localhost:1313`
+
+```
+hugo server --theme=aerial
+```
+<p align="center">
+<img src="https://github.com/virtualjj/aws-s3-backed-cloudflare-static-website/blob/master/images/readme/setuphugosite-006-generate-site-locally.jpg" alt="Generate Hugo site locally to confirm that the theme works.="75%" width="75%">
+</p>
+
+Open up a new tab and go to `localhost:1313`. The local website and theme should display:
+
+<p align="center">
+<img src="https://github.com/virtualjj/aws-s3-backed-cloudflare-static-website/blob/master/images/readme/setuphugosite-006-view-local-hugo-site-and-theme.jpg" alt="View the Hugo site locally and make sure the theme is working.="75%" width="75%">
+</p>
+
+7. Press `Ctrl+C` to cancel the static website.
+
+## CONFIGURE CODECOMMIT GIT REPO
+
+
+
+
+
 
 ## ACKNOWLEDGMENTS
 
