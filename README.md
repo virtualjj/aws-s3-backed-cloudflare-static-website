@@ -283,7 +283,7 @@ Click on the __Permissions__ tab and notice the __Inline Policies__ section. A p
 <img src="https://github.com/virtualjj/aws-s3-backed-cloudflare-static-website/blob/master/images/readme/codecommitconfig-000-edit-policy-for-better-view.jpg" alt="Click on Edit Policy to get a better view of the applied policy created by the stack." height="75%" width="75%">
 </p>
 
-Here is the actually policy
+Here is the actual policy (with my AWS account number masked):
 
 ```
 {
@@ -325,6 +325,10 @@ Here is the actually policy
     ]
 }
 ```
+
+This policy will allow any IAM user in the group have the required permissions to manage the static website's S3 bucket and CodeCommit repository.
+
+The next thing you need to do is create a key pair for the CodeCommmit user.
 
 ## ACKNOWLEDGMENTS
 
