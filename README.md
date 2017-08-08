@@ -223,7 +223,30 @@ Now that you confirmed that static web hosting is working, it's time to add the 
 <img src="https://github.com/virtualjj/aws-s3-backed-cloudflare-static-website/blob/master/images/readme/addcname-004-confirm-dns-propagation.jpg" alt="Use whatsmydns.net to confirm DNS propagation." height="75%" width="75%">
 </p>
 
-5. Your site should now open on it's domain name now instead of the S3 endpoint. If [whatsmydns.net](https://www.whatsmydns.net) is showing all green checks but your browser is not resolving the DNS name, clear out your DNS cache.
+5. Your site should now open on it's domain name now instead of the S3 endpoint. Note that the server now shows __cloudflare-nginx__ If [whatsmydns.net](https://www.whatsmydns.net) is showing all green checks but your browser is not resolving the DNS name, clear out your DNS cache.
+
+<p align="center">
+<img src="https://github.com/virtualjj/aws-s3-backed-cloudflare-static-website/blob/master/images/readme/addcname-005-confirm-can-open-site.jpg" alt="Confirm that you can access your S3 static website using your domain name." height="75%" width="75%">
+</p>
+
+If the your website times out make sure that __Crypto__ section in Cloudflare is set to `Flexible`:
+
+<p align="center">
+<img src="https://github.com/virtualjj/aws-s3-backed-cloudflare-static-website/blob/master/images/readme/addcname-005-confirm-crypto-set-to-flexible.jpg" alt="Make sure Cloudflare Crypto option is set to Flexible." height="75%" width="75%">
+</p>
+
+6. One last thing to do on the Cloudflare side is to setup a redirect so that your site always opens on HTTPS. Do this by going to the __Page Rules__ tab and setup a URL match and set it to `Always use HTTPS`. When you are done click the __Save and Deploy__ button:
+
+```
+http://example.com/*
+```
+
+<p align="center">
+<img src="https://github.com/virtualjj/aws-s3-backed-cloudflare-static-website/blob/master/images/readme/addcname-006-configure-cloudlare-redirect.jpg" alt="Set Cloudflare page rule to redirect all HTTP requests to HTTPS." height="75%" width="75%">
+</p>
+
+
+
 
 
 
