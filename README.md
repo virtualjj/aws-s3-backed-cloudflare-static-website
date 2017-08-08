@@ -245,6 +245,18 @@ http://example.com/*
 <img src="https://github.com/virtualjj/aws-s3-backed-cloudflare-static-website/blob/master/images/readme/addcname-006-configure-cloudlare-redirect.jpg" alt="Set Cloudflare page rule to redirect all HTTP requests to HTTPS." height="75%" width="75%">
 </p>
 
+Now when you access the site using `www.example.com` or `http://example.com` your site will redirect to `https://example.com`. Note that you would normally configure this setting on a web server like NGINX or APACHE but since AWS is managing the S3 static website web server this is one way to accomplish a redirect from HTTP to HTTPS:
+
+<p align="center">
+<img src="https://github.com/virtualjj/aws-s3-backed-cloudflare-static-website/blob/master/images/readme/addcname-006-try-open-with-www.jpg" alt="Try opening your site using www." height="75%" width="75%">
+</p>
+
+Note that in my example the site redirects to `https://tutorialstuff.xyz` and there are no [HTTP status codes](http://www.restapitutorial.com/httpstatuscodes.html) such as `301 Moved Permanently` or `307 Temporary Redirect`:
+
+<p align="center">
+<img src="https://github.com/virtualjj/aws-s3-backed-cloudflare-static-website/blob/master/images/readme/addcname-006-confirm-http-status-code.jpg" alt="Confirm the HTTP status code of 200 instead of 301 or 307." height="75%" width="75%">
+</p>
+
 
 
 
