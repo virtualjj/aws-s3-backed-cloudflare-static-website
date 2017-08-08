@@ -271,6 +271,61 @@ Note that in my example the site redirects to `https://tutorialstuff.xyz` and th
 
 ## CONFIGURE CODECOMMIT USER
 
+If you used the default settings when launching the stack, you should have a new IAM group and user. Navigate to your IAM console and confirm the group and user deployed by this stack. If you had any other IAM users that you want to be able to use CodeCommit for this website you could add them to this group:
+
+<p align="center">
+<img src="https://github.com/virtualjj/aws-s3-backed-cloudflare-static-website/blob/master/images/readme/codecommitconfig-000-confirm-group-user.jpg" alt="Confirm IAM group and user." height="75%" width="75%">
+</p>
+
+Click on the __Permissions__ tab and notice the __Inline Policies__ section. A policy was created by this template and attached to the *group*, not the IAM user. Normally you would click on __Show Policy__ but for whatever reason CloudFormation generated policies display all on one-line. Argh. So click on __Edit Policy__ instead to get a better view of what permissions have been applied to the group:
+
+<p align="center">
+<img src="https://github.com/virtualjj/aws-s3-backed-cloudflare-static-website/blob/master/images/readme/codecommitconfig-000-edit-policy-for-better-view.jpg" alt="Click on Edit Policy to get a better view of the applied policy created by the stack." height="75%" width="75%">
+</p>
+
+Here is the actually policy
+
+```
+{
+    "Statement": [
+        {
+            "Action": [
+                "s3:DeleteObject",
+                "s3:GetBucketAcl",
+                "s3:GetBucketWebsite",
+                "s3:GetObject",
+                "s3:GetObjectAcl",
+                "s3:GetObjectVersion",
+                "s3:GetObjectVersionAcl",
+                "s3:PutObject",
+                "s3:PutObjectAcl"
+            ],
+            "Resource": "arn:aws:s3:::tutorialstuff.xyz/*",
+            "Effect": "Allow",
+            "Sid": "S3Access"
+        },
+        {
+            "Action": [
+                "codecommit:BatchGetRepositories",
+                "codecommit:CreateBranch",
+                "codecommit:Get*",
+                "codecommit:GitPull",
+                "codecommit:GitPush",
+                "codecommit:List*",
+                "codecommit:Put*",
+                "codecommit:Test*",
+                "codecommit:Update*"
+            ],
+            "Resource": [
+                "arn:aws:codecommit:us-west-2:XXXXXXXXXXXX:tutorialstuff.xyz"
+            ],
+            "Effect": "Allow",
+            "Sid": "CodeCommitAccess"
+        }
+    ]
+}
+```
+
 ## ACKNOWLEDGMENTS
 
 Thanks to Eric Hammond for inspiring me to work on this project. Much of his [alestic/aws-git-backed-static-website](https://github.com/alestic/aws-git-backed-static-website) template was used as the basis for this project.
