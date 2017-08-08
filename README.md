@@ -1,15 +1,20 @@
 # AWS S3 Backed Static Website With Cloudflare
 
-  - [PREREQUISITES](#prerequisites)
-  - [CAVEATS](#caveats)
-  - [CONFIRM S3 BUCKET NAME AVAILABILITY](#confirm-s3-bucket-name-availability)
-  - [STACK DEPLOYMENT](#stack-deployment)
-  - [CONFIRM STATIC HOSTING WORKS](#confirm-static-hosting-works)
-  - [ADD CNAME TO CLOUDFLARE](#add-cname-to-cloudflare)
-  - [SETUP CLOUDFLARE HTTPS REDIRECT](#setup-cloudflare-https-redirect)
-  - [SETUP HUGO WEBSITE EXAMPLE](#setup-hugo-website-example)
-  - [CONFIGURE CODECOMMIT USER](#configure-codecommit-user)
-  - [ACKNOWLEDGMENTS](#acknowledgments)
+- [PURPOSE](#purpose)
+- [PREREQUISITES](#prerequisites)
+- [CAVEATS](#caveats)
+- [CONFIRM S3 BUCKET NAME AVAILABILITY](#confirm-s3-bucket-name-availability)
+- [STACK DEPLOYMENT](#stack-deployment)
+- [CONFIRM STATIC HOSTING WORKS](#confirm-static-hosting-works)
+- [ADD CNAME TO CLOUDFLARE](#add-cname-to-cloudflare)
+- [SETUP CLOUDFLARE HTTPS REDIRECT](#setup-cloudflare-https-redirect)
+- [CONFIGURE CODECOMMIT USER](#configure-codecommit-user)
+- [SETUP HUGO WEBSITE EXAMPLE](#setup-hugo-website-example)
+- [CONFIGURE CODECOMMIT GIT REPO](#configure-codecommit-git-repo)
+- [COPY STATIC WEBSITE FILES TO S3](#copy-static-website-files-to-s3)
+  - [DRAG-AND-DROP METHOD](#drag-and-drop-method)
+  - [CLI METHOD](#cli-method)
+- [ACKNOWLEDGMENTS](#acknowledgments)
 
 ## PURPOSE
 
