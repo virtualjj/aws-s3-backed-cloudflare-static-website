@@ -4,6 +4,8 @@
 - [PREREQUISITES](#prerequisites)
 - [CAVEATS](#caveats)
 - [CONFIRM S3 BUCKET NAME AVAILABILITY](#confirm-s3-bucket-name-availability)
+  - [AWS CONSOLE EXAMPLE](#aws-console-example)
+  - [AWS CLI EXAMPLE](#aws-cli-example)
 - [STACK DEPLOYMENT](#stack-deployment)
 - [CONFIRM STATIC HOSTING WORKS](#confirm-static-hosting-works)
 - [ADD CNAME TO CLOUDFLARE](#add-cname-to-cloudflare)
@@ -22,7 +24,7 @@ S3 backed static websites are becoming more and more popular but the learning cu
 
 I've seen a lot of S3 static website projects that use [AWS CloudFront](http://docs.aws.amazon.com/AmazonCloudFront/latest/DeveloperGuide/Introduction.html) but not [Cloudflare](https://www.Cloudflare.com/) which is interesting. CloudFront is a terrific service but I think Cloudflare&mdash;especially the free version&mdash;has A LOT to offer and is probably more accessible for folks new to CDN (Content Delivery Network). If you are a diehard CloudFront supporter, at least agree with me that it's incredibly annoying having to wait at least 15 minutes to create or delete each CloudFront distribution.
 
-While it's tempting to get bogged down into the important details of security, application methodology, pipelines, etc. the main goal of this project is to help newcomers get started and expand from there. I do sprinkle some security tidbits here and there but your security requirements will depend on your environment and threat model.
+While it's tempting to get bogged down into the important details of security, application methodology, pipelines, etc. the main goal of this project is to help newcomers get started with static sites and Git then expand from there. I do sprinkle some security tidbits here and there but your security requirements will depend on your environment and threat model.
 
 Pull requests and feedback are always welcome so don't be shy!
 
@@ -52,13 +54,21 @@ Source: http://docs.aws.amazon.com/AmazonCloudFront/latest/DeveloperGuide/using-
 
 You will need to set Cloudflare's SSL option to **Flexible** which means that your visitors will connect to your web site over TLS to Cloudflare's CDN and then Cloudflare will connect to your AWS S3 origin (i.e. static website bucket) *unencrypted*. This shouldn't be an issue for personal blogs or small websites but I wanted to clarify this caveat as it could be a showstopper for some. Details about Cloudflare's SSL options can be referenced [here](https://support.Cloudflare.com/hc/en-us/articles/204144518-SSL-FAQ).
 
+The only real advantage of using CloudFront instead of Cloudflare when it comes to TLS certificates *for a lot of people* is that with AWS you get your own certificate (i.e. no shared) that can be used on your CloudFront distribution while Cloudflare's free version is actually a shared certificate. If you aren't sure what I'm talking about here is what you see when you view the certificate properties of a Cloudflare shared TLS certificate:
+
+<p align="center">
+<img src="https://github.com/virtualjj/aws-s3-backed-cloudflare-static-website/blob/master/images/readme/cloudflare-tls-cert-sharing-example.jpg" alt="Example of a Cloudflare shared TLS certificate." height="75%" width="75%">
+</p>
+
+If you are coming from traditional web hosting I thought this caveat might be important to highlight. Now on to the fun stuff!
+
 ## CONFIRM S3 BUCKET NAME AVAILABILITY
 
-Before launching the stack confirm whether or not your domain name is available. S3 is a global service so if ***example.com***&mdash;for example&mdash;is already taken, it's taken in all regions and ***all*** AWS accounts. This is important to note as the stack will fail if the S3 bucket already exists but not in your region and/or AWS account.
+Before launching the stack confirm whether or not your domain name is available on S3. S3 is a global service so if ***example.com***&mdash;for example&mdash;is already taken, it's taken in all regions and ***all*** AWS accounts. This is important to note as the stack will fail if the S3 bucket already exists but not in your region and/or AWS account.
 
 Check by either creating a bucket in the AWS console or trying to list the contents of the bucket using the AWS CLI.
 
-**AWS Console Example:**
+### AWS CONSOLE EXAMPLE
 
 This is the error you'll get if the bucket is already claimed:
 
@@ -72,7 +82,7 @@ If you were able to create the bucket, don't delete it per AWS's advice:
 
 Source: http://docs.aws.amazon.com/AmazonS3/latest/user-guide/delete-bucket.html
 
-**AWS CLI Example:**
+### AWS CLI EXAMPLE
 
 Here is one example of what an already claimed bucket message will look like:
 
