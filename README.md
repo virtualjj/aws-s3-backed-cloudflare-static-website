@@ -11,9 +11,21 @@
   - [CONFIGURE CODECOMMIT USER](#configure-codecommit-user)
   - [ACKNOWLEDGMENTS](#acknowledgments)
 
-I've seen a lot of S3 static website projects that use [AWS CloudFront](http://docs.aws.amazon.com/AmazonCloudFront/latest/DeveloperGuide/Introduction.html) but not [Cloudflare](https://www.Cloudflare.com/). CloudFront is a terrific service but I think Cloudflare&mdash;especially the free version&mdash;has A LOT to offer and is probably more accessible for folks new to CDN (Content Delivery Network) and WAF (Web Application Firewall).
+## PURPOSE
+
+S3 backed static websites are becoming more and more popular but the learning curve for folks used to traditional CMSs (Content Management System) like Wordpress might have a hard time getting started. I created this project and __README.md__ so that newcomers can quickly get up and running while learning a bit more about AWS CodeCommit, IAM, and S3 by using an automated template to do most of the heavy lifting.
+
+I've seen a lot of S3 static website projects that use [AWS CloudFront](http://docs.aws.amazon.com/AmazonCloudFront/latest/DeveloperGuide/Introduction.html) but not [Cloudflare](https://www.Cloudflare.com/) which is intereting. CloudFront is a terrific service but I think Cloudflare&mdash;especially the free version&mdash;has A LOT to offer and is probably more accessible for folks new to CDN (Content Delivery Network).
+
+While it's tempting to get bogged down into the important details of security, application methodology, pipelines, the main goal of this project is to help newcomers get started and expand from there.
+
+Pull requests and feedback welcome so don't be shy!
 
 ## PREREQUISITES
+
+You will need [Git](https://git-scm.com/downloads) and the [AWS CLI](http://docs.aws.amazon.com/cli/latest/userguide/installing.html) installed to follow many of the examples in this tutorial.
+
+Hugo is also used for an example static website so if you want to follow along you will need to install [Hugo](https://gohugo.io/getting-started/installing/).
 
 Since this this project is supposed to work with Cloudflare, you will of course need a Cloudflare account. If you don't have a free account yet create one [here](https://www.Cloudflare.com/a/sign-up).
 
@@ -475,10 +487,216 @@ Open up a new tab and go to `localhost:1313`. The local website and theme should
 
 ## CONFIGURE CODECOMMIT GIT REPO
 
+Now that we have a folder to commit changes to we can configure Git to use the CodeCommit repository that was created with the stack. This section assumes that you aren't too familiar with Git but here is a [cheat sheet](https://www.git-tower.com/blog/git-cheat-sheet/) if you want to explore more.
+
+1. Initialize the Hugo website folder with git:
+
+```
+git init
+```
+
+Notice that you now have a __.git__ folder listed:
+
+<p align="center">
+<img src="https://github.com/virtualjj/aws-s3-backed-cloudflare-static-website/blob/master/images/readme/ccconfigure-001-git-init.jpg" alt="Initialize the Hugo website folder with git init.="75%" width="75%">
+</p>
+
+Use the following command to view the Git configuration&mdash;notice there isn't much yet:
+
+```
+cat .git/config
+```
+<p align="center">
+<img src="https://github.com/virtualjj/aws-s3-backed-cloudflare-static-website/blob/master/images/readme/ccconfigure-001-view-git-config.jpg" alt="View the local Git configuration.="75%" width="75%">
+</p>
 
 
+2. Now we need to add a remote origin&mdash;the CodeCommit repository&mdash;with your IAM user and CodeCommit SSH credentials. Refer back to the `Outputs` section of the launched CloudFormation stack. Look at the one labelled __GitCloneUrlSsh__ and copy the URL to a text editor&mdash;we will make a slight modification:
+
+<p align="center">
+<img src="https://github.com/virtualjj/aws-s3-backed-cloudflare-static-website/blob/master/images/readme/ccconfigure-002-get-ccommit-url-from-clf-outputs.jpg" alt="Get the CodeCommit URL from the Outputs section of the launched stack.="75%" width="75%">
+</p>
+
+Copy the URL and put your IAM SSH KEY ID that you created in [CONFIGURE CODECOMMIT USER](#configure-codecommit-user) before the CodeCommit URL with an ampersand. We will add the URL to the local Git configuration using the `git remote add origin` command. Here is what mine looks like:
+
+```
+git remote add origin ssh://APKAJ2YFIEMJBW6MTT4A@git-codecommit.us-west-2.amazonaws.com/v1/repos/tutorialstuff.xyz
+```
+
+3. Execute the full `git remote add origin` command and view the Git config again:
+
+<p align="center">
+<img src="https://github.com/virtualjj/aws-s3-backed-cloudflare-static-website/blob/master/images/readme/ccconfigure-003-add-remote-origin.jpg" alt="Add the CodeCommit remote origin URL to the local Git configuration.="75%" width="75%">
+</p>
+
+4. Check the status with `git status`; you will see a notification that there are untracked files. Then run `git add .` and commit the changes with `git commit -m "Initial commit."` Finally, try pushing the changes from your local repo to the AWS CodeCommit repo&mdash; that it will fail.
+
+```
+Demo: git status
+On branch master
+
+Initial commit
+
+Untracked files:
+  (use "git add <file>..." to include in what will be committed)
+
+	archetypes/
+	config.toml
+	themes/
+
+nothing added to commit but untracked files present (use "git add" to track)
+Demo: git add .
+Demo: git commit -m "Initial commit."
+[master (root-commit) eafac1b] Initial commit.
+ 3 files changed, 44 insertions(+)
+ create mode 100644 archetypes/default.md
+ create mode 100644 config.toml
+ create mode 160000 themes/aerial
+Demo: git push origin master
+Permission denied (publickey).
+fatal: Could not read from remote repository.
+
+Please make sure you have the correct access rights
+and the repository exists.
+```
+
+<p align="center">
+<img src="https://github.com/virtualjj/aws-s3-backed-cloudflare-static-website/blob/master/images/readme/ccconfigure-004-initial-commit-fail.jpg" alt="Observe the failure of the initial commit.="75%" width="75%">
+</p>
+
+The reason why this happens is because the CodeCommit repo cannot confirm that you have or are using the correct private CodeCommit SSH key associated with the public key you uploaded your IAM user. Remember that key pair that you generated previously? We need to add the private key (hopefully passphrase protected) to our local SSH identity:
+
+```
+ssh-add <your private key file>
+ssh-add -L
+```
+
+Here is a screenshot of mine&mdash;note that I setup a passphrase on my SSH key so I have to enter it:
+
+<p align="center">
+<img src="https://github.com/virtualjj/aws-s3-backed-cloudflare-static-website/blob/master/images/readme/ccconfigure-004-add-ssh-key-identity.jpg" alt="Add SSH identity.="75%" width="75%">
+</p>
+
+ It's worth mentioning that this method is not what AWS explains to do in their [guide](http://docs.aws.amazon.com/codecommit/latest/userguide/setting-up-ssh-unixes.html). You should be aware that when your SSH identity is added, you won't be prompted for a passphrase each time so that could be a security concern depending on your environment. The threat is that a nefarious individual or bot could obtain shell access to your PC locally or remotely and execute commands since the identity is added to memory. While that is a concern, the likelihood is low and the impact is lower as well since the SSH key only has access to your website S3 bucket and CodeCommit repository. Other than deleting or modifying your public web site in an embarrassing way, there isn't much damage that could be done anyway versus if you were using an IAM user with full administrator access to your AWS account.
+
+ Either way, make sure to remove your SSH identities using `ssh-add -D` when you are done or reboot your computer as a reboot will clear them out as well.
+
+ 5. After adding your SSH private key to your local SSH identity, try pushing your local Git repo again. It should push successfully this time:
+
+ <p align="center">
+ <img src="https://github.com/virtualjj/aws-s3-backed-cloudflare-static-website/blob/master/images/readme/ccconfigure-005-retry-codecommit-push.jpg" alt="After adding SSH identity trying pushing local Git repo to remote CodeCommit again.="75%" width="75%">
+ </p>
+
+ You will also receive an email notification of the activity:
+
+ <p align="center">
+ <img src="https://github.com/virtualjj/aws-s3-backed-cloudflare-static-website/blob/master/images/readme/ccconfigure-005-codecommit-sns-email-notification.jpg" alt="After performing an activity on CodeCommit receive an email notification.="75%" width="75%">
+ </p>
+
+6. Go to your AWS console and view the CodeCommit repository. You will be able to see the files that you commit locally now stored on your AWS CodeCommit repository:
+
+<p align="center">
+<img src="https://github.com/virtualjj/aws-s3-backed-cloudflare-static-website/blob/master/images/readme/ccconfigure-006-confirm-files-pushed-to-codecommit.jpg" alt="Confirm that local files that were commited have been successfully pushed to AWS CodeCommit.="75%" width="75%">
+</p>
+
+Now the only left to do is copy the files from your statically generated website&mdash;in this tutorial's example will be the files in the __public__ folder.
 
 
+## COPY STATIC WEBSITE FILES TO S3
+
+Continuing with our Hugo example, go ahead and generate the actual website using the `hugo -v` command. This will create a new folder called __public__:
+
+```
+hugo -v
+```
+<p align="center">
+<img src="https://github.com/virtualjj/aws-s3-backed-cloudflare-static-website/blob/master/images/readme/copystaticfiles-000-generate-hugo-ste.jpg" alt="Generate the Hugo static website to get the files that need to be uploaded to your S3 static website bucket.="75%" width="75%">
+</p>
+
+Remember in [CONFIRM STATIC HOSTING WORKS](#confirm-static-hosting-works) you set your S3 static website bucket policy to public? There are actually two ways to do this. Here is the first way since we've already set the bucket to public.
+
+### Drag-and-Drop Method
+
+Open the root static website S3 bucket and click the __Upload__ button. Here you can simply drag in the contents of that Hugo public folder. Note that the *index.html* that you previously created if you are following along step-by-step will be overwritten:
+
+<p align="center">
+<img src="https://github.com/virtualjj/aws-s3-backed-cloudflare-static-website/blob/master/images/readme/copystaticfiles-000-open-for-drag-drop.jpg" alt="Click upload to drag and drop the contents of your Hugo public folder.="75%" width="75%">
+</p>
+
+Drag over the files and press the __Upload__ button:
+
+
+<p align="center">
+<img src="https://github.com/virtualjj/aws-s3-backed-cloudflare-static-website/blob/master/images/readme/copystaticfiles-000-upload-dragged-dropped-files.jpg" alt="Upload the files and folders that you dragged into the S3 uploader.="75%" width="75%">
+</p>
+
+You can now access your website by DNS name and view your Hugo statically generated site using the Aero theme:
+
+<p align="center">
+<img src="https://github.com/virtualjj/aws-s3-backed-cloudflare-static-website/blob/master/images/readme/copystaticfiles-000-confirm-site-opens-with-theme.jpg" alt="Access your website by DNS name to confirm that your Hugo generated site and theme work after uploaded to S3.="75%" width="75%">
+</p>
+
+### CLI METHOD
+
+If you use this method you can upload your statically generated website via the AWS CLI. This might be preferable since you will be at the command line anyway however, you have to generated AWS Access Keys from the console.
+
+<p align="center">
+<img src="https://github.com/virtualjj/aws-s3-backed-cloudflare-static-website/blob/master/images/readme/copystaticfiles-000-climethod-create-access-key.jpg" alt="Create and access key so that you can run AWS CLI commands.="75%" width="75%">
+</p>
+
+At the command prompt, run the command `aws configure` to add a profile for this limited IAM user. Use the data from the __Create access key__ for the __Access key ID__ and __Secret access key__:
+
+<p align="center">
+<img src="https://github.com/virtualjj/aws-s3-backed-cloudflare-static-website/blob/master/images/readme/copystaticfiles-000-climethod-access-key-info.jpg" alt="Example of create access key ID and secret dialog box from IAM.="75%" width="75%">
+</p>
+
+Run the local AWS CLI configuration command&mdash;make sure to use a profile. Note that the example below has masked the actual ID and secret:
+```
+Demo: aws configure --profile tutorialstuff-xyz
+AWS Access Key ID [None]: AKIAXXXXXXXXXXXXX
+AWS Secret Access Key [None]: AXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
+Default region name [None]: us-west-2
+Default output format [None]:
+```
+
+Now that you have Access keys configured try listing your static website bucket:
+
+```
+aws s3 ls tutorialstuff.xyz --profile tutorialstuff-xyz
+```
+<p align="center">
+<img src="https://github.com/virtualjj/aws-s3-backed-cloudflare-static-website/blob/master/images/readme/copystaticfiles-000-list-bucket-using-aws-cli.jpg" alt="List contents of static website bucket using AWS CLI.="75%" width="75%">
+</p>
+
+This works because the IAM user that you enabled access keys for is part of the group that has a policy action of `s3:GetObject` set to `allow` for this specific S3 bucket.
+
+You can delete the public bucket policy because we will set objects to public when we upload them via the AWS CLI:
+
+<p align="center">
+<img src="https://github.com/virtualjj/aws-s3-backed-cloudflare-static-website/blob/master/images/readme/copystaticfiles-000-delete-public-bucket-policy.jpg" alt="Delete the public bucket policy and use the AWS CLI instead.="75%" width="75%">
+</p>
+
+Confirm that you cannot access the website anymore (because the bucket policy was deleted):
+
+<p align="center">
+<img src="https://github.com/virtualjj/aws-s3-backed-cloudflare-static-website/blob/master/images/readme/copystaticfiles-000-confirm-access-denied-due-to-no-bucket-policy.jpg" alt="When the public access bucket policy is deleted the website will not be accessible anymore.="75%" width="75%">
+</p>
+
+Now this time, when you generate the static website upload the files in the same command:
+
+```
+hugo -v && aws s3 sync --acl public-read --sse --delete public/ s3://tutorialstuff.xyz --profile tutorialstuff-xyz
+```
+
+<p align="center">
+<img src="https://github.com/virtualjj/aws-s3-backed-cloudflare-static-website/blob/master/images/readme/copystaticfiles-000-generate-site-upload-via-cli.jpg" alt="Generate the Hugo site and upload to S3 settting files to public.="75%" width="75%">
+</p>
+
+The website should be accessible again:
+
+<p align="center">
+<img src="https://github.com/virtualjj/aws-s3-backed-cloudflare-static-website/blob/master/images/readme/static-website-accessible-by-dns-name.jpg" alt="Static website accessible by DNS name again.="75%" width="75%">
+</p>
 
 ## ACKNOWLEDGMENTS
 
