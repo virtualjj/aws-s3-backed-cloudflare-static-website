@@ -1,5 +1,13 @@
 # AWS S3 Backed Static Website With Cloudflare
 
+  - [PREREQUISITES](#prerequisites)
+  - [CAVEATS](#caveats)
+  - [CONFIRM S3 BUCKET NAME AVAILABILITY](#confirm-s3-bucket-name-availability)
+  - [STACK DEPLOYMENT](#stack-deployment)
+  - [CONFIRM STATIC HOSTING WORKS](#confirm-static-hosting-works)
+  - [ADD CNAME TO CLOUDFLARE](#add-cname-to-cloudflare)
+  - [ACKNOWLEDGMENTS](#acknowledgments)
+
 I've seen a lot of S3 static website projects that use [AWS CloudFront](http://docs.aws.amazon.com/AmazonCloudFront/latest/DeveloperGuide/Introduction.html) but not [Cloudflare](https://www.Cloudflare.com/). CloudFront is a terrific service but I think Cloudflare&mdash;especially the free version&mdash;has A LOT to offer and is probably more accessible for folks new to CDN (Content Delivery Network) and WAF (Web Application Firewall).
 
 ## PREREQUISITES
@@ -235,31 +243,29 @@ If the your website times out make sure that __Crypto__ section in Cloudflare is
 <img src="https://github.com/virtualjj/aws-s3-backed-cloudflare-static-website/blob/master/images/readme/addcname-005-confirm-crypto-set-to-flexible.jpg" alt="Make sure Cloudflare Crypto option is set to Flexible." height="75%" width="75%">
 </p>
 
-6. One last thing to do on the Cloudflare side is to setup a redirect so that your site always opens on HTTPS. Do this by going to the __Page Rules__ tab and setup a URL match and set it to `Always use HTTPS`. When you are done click the __Save and Deploy__ button:
+## SETUP CLOUDFLARE HTTPS REDIRECT
+
+One last thing to do on the Cloudflare side is to setup a redirect so that your site always opens on HTTPS. Do this by going to the __Page Rules__ tab and setup a URL match and set it to `Always use HTTPS`. When you are done click the __Save and Deploy__ button:
 
 ```
 http://example.com/*
 ```
 
 <p align="center">
-<img src="https://github.com/virtualjj/aws-s3-backed-cloudflare-static-website/blob/master/images/readme/addcname-006-configure-cloudlare-redirect.jpg" alt="Set Cloudflare page rule to redirect all HTTP requests to HTTPS." height="75%" width="75%">
+<img src="https://github.com/virtualjj/aws-s3-backed-cloudflare-static-website/blob/master/images/readme/setupredirect-000-configure-cloudlare-redirect.jpg" alt="Set Cloudflare page rule to redirect all HTTP requests to HTTPS." height="75%" width="75%">
 </p>
 
 Now when you access the site using `www.example.com` or `http://example.com` your site will redirect to `https://example.com`. Note that you would normally configure this setting on a web server like NGINX or APACHE but since AWS is managing the S3 static website web server this is one way to accomplish a redirect from HTTP to HTTPS:
 
 <p align="center">
-<img src="https://github.com/virtualjj/aws-s3-backed-cloudflare-static-website/blob/master/images/readme/addcname-006-try-open-with-www.jpg" alt="Try opening your site using www." height="75%" width="75%">
+<img src="https://github.com/virtualjj/aws-s3-backed-cloudflare-static-website/blob/master/images/readme/setupredirect-000-try-open-with-www.jpg" alt="Try opening your site using www." height="75%" width="75%">
 </p>
 
 Note that in my example the site redirects to `https://tutorialstuff.xyz` and there are no [HTTP status codes](http://www.restapitutorial.com/httpstatuscodes.html) such as `301 Moved Permanently` or `307 Temporary Redirect`:
 
 <p align="center">
-<img src="https://github.com/virtualjj/aws-s3-backed-cloudflare-static-website/blob/master/images/readme/addcname-006-confirm-http-status-code.jpg" alt="Confirm the HTTP status code of 200 instead of 301 or 307." height="75%" width="75%">
+<img src="https://github.com/virtualjj/aws-s3-backed-cloudflare-static-website/blob/master/images/readme/setupredirect-000-confirm-http-status-code.jpg" alt="Confirm the HTTP status code of 200 instead of 301 or 307." height="75%" width="75%">
 </p>
-
-
-
-
 
 
 ## ACKNOWLEDGMENTS
