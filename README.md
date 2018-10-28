@@ -456,7 +456,7 @@ Demo: pwd
 3. I will clone the [Aerial theme](https://themes.gohugo.io/aerial/) by [Seth MacLeod](https://www.sethmacleod.com/) and use it as an example:
 
 ```
-git clone git clone https://github.com/sethmacleod/aerial.git
+git clone https://github.com/sethmacleod/aerial.git
 ```
 
 <p align="center">
